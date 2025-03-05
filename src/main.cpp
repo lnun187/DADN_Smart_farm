@@ -1,13 +1,16 @@
 #include "../lib/main.h"
-// #include "../lib/output.h"
-// #include "../lib/sensor.h"
-// Sử dụng Wire thay vì Wire1 (mặc định trên ESP32)
-
-// int Value_Light;
-// int Temperature;
-// int Humidity;
-// int soilMoisturePercentage;
-
+AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
+AdafruitIO_Feed *led = io.feed("DADN_RGB_LED");
+AdafruitIO_Feed *fan_control = io.feed("DADN_FAN");
+AdafruitIO_Feed *dht20Sensor = io.feed("DADN_DHT20");
+AdafruitIO_Feed *lightSensor = io.feed("DADN_LIGHT_SENSOR");
+AdafruitIO_Feed *soilmoistureSensor = io.feed("DADN_SOIL_MOISTURE");
+void handleRGB(AdafruitIO_Data *data){
+  controlRGB(data->toString());
+}
+void handleFan(AdafruitIO_Data *data){
+  controlFan(data->toInt());
+}
 void setup()
 {
   pinMode(pump1, OUTPUT);
@@ -20,15 +23,30 @@ void setup()
   DHT.begin();
   lcd.init(); // initialize the lcd
   lcd.backlight();
+  io.connect();
+  led->onMessage(handleRGB);
+  fan_control->onMessage(handleFan);
+  while(io.status() < AIO_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println();
+  Serial.println(io.statusText());
+  led->get();
 }
 
 void loop()
 {
-  readDHT20();
+  io.run();
   readLight();
+  lightSensor->save(Value_Light);
+  readDHT20();
+  dht20Sensor->save(Value_Light);
   readSoilMoisture();
-  controlRGB(215, 15, 15);
-  controlFan(100);
-  lcdDisplay();
-  delay(2000); // Đọc dữ liệu mỗi 2 giây để tránh xung đột I2C
+  soilmoistureSensor->save(Value_Light);
+  // controlRGB("#00fff0");
+  // controlFan(0);
+  // lcdDisplay();
+  
+  delay(1000); // Đọc dữ liệu mỗi 2 giây để tránh xung đột I2C
 }

@@ -11,10 +11,20 @@ void manageWaterPump(bool status1, bool status2){
   analogWrite(fan, fanSpeed);
 }
 Adafruit_NeoPixel NeoPixel(NUM_PIXELS, PIN_NEO_PIXEL, NEO_GRB + NEO_KHZ800);
-void controlRGB(int a, int b, int c){
+uint32_t hexToUint32(String hex) {
+  if (hex.charAt(0) == '#') {
+      hex = hex.substring(1); // Bỏ ký tự '#'
+  }
+  long number = strtol(hex.c_str(), NULL, 16); // Chuyển đổi chuỗi hex thành số
+  uint8_t r = (number >> 16) & 0xFF; // Lấy giá trị Red
+  uint8_t g = (number >> 8) & 0xFF;  // Lấy giá trị Green
+  uint8_t b = number & 0xFF;         // Lấy giá trị Blue
+  return NeoPixel.Color(r, g, b);
+}
+void controlRGB(String hex){
   for (int i = 0; i < NUM_PIXELS; i++)
   {
-    NeoPixel.setPixelColor(i, NeoPixel.Color(a, b, c));
+    NeoPixel.setPixelColor(i, hexToUint32(hex));
     NeoPixel.show();
   }
 }
