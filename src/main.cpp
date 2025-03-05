@@ -2,7 +2,8 @@
 AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
 AdafruitIO_Feed *led = io.feed("DADN_RGB_LED");
 AdafruitIO_Feed *fan_control = io.feed("DADN_FAN");
-AdafruitIO_Feed *dht20Sensor = io.feed("DADN_DHT20");
+AdafruitIO_Feed *humSensor = io.feed("DADN_DHT20");
+AdafruitIO_Feed *tempSensor = io.feed("DADN_DHT20");
 AdafruitIO_Feed *lightSensor = io.feed("DADN_LIGHT_SENSOR");
 AdafruitIO_Feed *soilmoistureSensor = io.feed("DADN_SOIL_MOISTURE");
 void handleRGB(AdafruitIO_Data *data){
@@ -41,6 +42,7 @@ void loop()
   readLight();
   lightSensor->save(Value_Light);
   readDHT20();
+  dht20Sensor->save(Value_Light);
   dht20Sensor->save(Value_Light);
   readSoilMoisture();
   soilmoistureSensor->save(Value_Light);
