@@ -41,11 +41,9 @@ void loop()
   io.run();
   readLight();
   lightSensor->save(Value_Light);
-  readDHT20();
-  dht20Sensor->save(Value_Light);
-  dht20Sensor->save(Value_Light);
-  readSoilMoisture();
-  soilmoistureSensor->save(Value_Light);
+  // readDHT20();
+  // readSoilMoisture();
+  // soilmoistureSensor->save(Value_Light);
   // controlRGB("#00fff0");
   // controlFan(0);
   // lcdDisplay();
