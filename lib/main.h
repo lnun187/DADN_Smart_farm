@@ -11,8 +11,8 @@
 #include "output.h"
 #include "sensor.h"
 // #include "adafruit.h"
-#define pump1 13
-#define pump2 12
+#define pump1 19
+#define pump2 23
 #define soilMoisture 32
 #define fan 27
 #define light 33
@@ -20,6 +20,7 @@
 #define NUM_PIXELS 4
 #define WIFI_SSID "ACLAB"
 #define WIFI_PASS "ACLAB2023"
-#define IO_USERNAME  "lnun187"
-#define IO_KEY       "aio_cVjx34fnN0RGWXWGhY449f4bOYhf"
+#define IO_USERNAME  "YOUR-USERNAME"
+#define IO_KEY       "YOUR-KEY"
+
 #endif /* INC_MAIN_H_ */

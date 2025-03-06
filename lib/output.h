@@ -3,7 +3,8 @@
 #include "main.h"
 
 extern LiquidCrystal_I2C lcd;
-void manageWaterPump(bool status1, bool status2);
+void manageWaterPump1(bool status);
+void manageWaterPump2(bool status);
 void controlFan(int fanSpeed);
 void controlRGB(String hex);
 void lcdDisplay();
