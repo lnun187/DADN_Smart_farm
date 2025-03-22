@@ -8,6 +8,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import OtpPage from './pages/OTPPage';
 import NewPasswordPage from './pages/NewPassword';
 
+
 const App: React.FC = () => {
   return (
     <Router>
