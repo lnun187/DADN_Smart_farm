@@ -19,20 +19,20 @@
 
 a {
   font-weight: 500;
-  color: #52e078; 
+  color: #52e078; /* Màu xanh lá */
   text-decoration: inherit;
 }
 a:hover {
-  color: #3cb464; 
+  color: #3cb464; /* Xanh đậm hơn khi hover */
 }
 
 body {
   margin: 0;
-  display: flex;
+  /* display: flex;*/
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #52e078, #001a00); 
+  /* background: linear-gradient(to bottom, #52e078, #001a00); /* Gradient toàn bộ nền */
 }
 
 h1 {
@@ -48,13 +48,13 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #3cb464; 
+  background-color: #3cb464; /* Nền nút xanh lá */
   color: white;
   cursor: pointer;
   transition: all 0.25s ease-in-out;
 }
 button:hover {
-  background-color: #2a8048; 
+  background-color: #2a8048; /* Đậm hơn khi hover */
   border-color: #52e078;
 }
 button:focus,
