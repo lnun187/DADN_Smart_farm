@@ -11,7 +11,7 @@ const PlantDetails: React.FC = () => {
       <SearchBar placeholder="Tìm kiếm cây trồng..." onSearch={setSearchValue} />
 
       {/* Khối thông tin */}
-      <div className="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full mt-6">
+      <div className="bg-white p-2 rounded-lg shadow-2xl max-w-md w-full mt-6">
         <h1 className="text-3xl font-bold text-green-800 mb-6 text-center">Cây kim ngân</h1>
         <div className="space-y-4">
           <div className="flex justify-between">
