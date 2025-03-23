@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage'
 import ForgotPassword from './pages/ForgotPassword';
 import OtpPage from './pages/OTPPage';
 import NewPasswordPage from './pages/NewPassword';
+import PlantDetails from './details/PlanDetails';
 
 
 const App: React.FC = () => {
@@ -19,7 +20,9 @@ const App: React.FC = () => {
         <Route path="/login" element={<LoginPage />} /> {/* Trang đăng nhập */}
           <Route path="/forgot-password" element={<ForgotPassword />} /> 
             <Route path="/otp" element={<OtpPage />} />
-              <Route path="/new-password" element={<NewPasswordPage />} />       
+              <Route path="/new-password" element={<NewPasswordPage />} />    
+
+        <Route path="/plan-details" element={<PlantDetails />} />    
       </Routes>
     </Router>
   );
