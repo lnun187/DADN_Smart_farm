@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import SearchBar from "../components/SearchBar"; 
-
+import SearchBar from "../components/SearchBar";
 
 const PlantDetails: React.FC = () => {
   const [searchValue, setSearchValue] = useState("");
@@ -11,24 +10,28 @@ const PlantDetails: React.FC = () => {
       <SearchBar placeholder="Tìm kiếm cây trồng..." onSearch={setSearchValue} />
 
       {/* Khối thông tin */}
-      <div className="bg-white p-2 rounded-lg shadow-2xl max-w-md w-full mt-6">
+      <div className="bg-white p-6 rounded-lg shadow-2xl max-w-md w-full mt-6">
         <h1 className="text-3xl font-bold text-green-800 mb-6 text-center">Cây kim ngân</h1>
-        <div className="space-y-4">
-          <div className="flex justify-between">
-            <span className="text-gray-700">Năng suất</span>
-            <span className="text-gray-900 font-semibold">±523 gr</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-700">THC</span>
-            <span className="text-gray-900 font-semibold">14 %</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-700">CBD</span>
-            <span className="text-gray-900 font-semibold">0,2 %</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-700">Ra hoa</span>
-            <span className="text-gray-900 font-semibold">3 - 5 Tuần</span>
+
+        {/* Ô bọc thông tin */}
+        <div className="info-container">
+          <div className="info-table">
+            <div className="info-row">
+              <div>Năng suất:</div>
+              <div>±523 gr</div>
+            </div>
+            <div className="info-row">
+              <div>THC:</div>
+              <div>14%</div>
+            </div>
+            <div className="info-row">
+              <div>CBD:</div>
+              <div>0,2%</div>
+            </div>
+            <div className="info-row">
+              <div>Ra hoa:</div>
+              <div>3 - 5 Tuần</div>
+            </div>
           </div>
         </div>
       </div>

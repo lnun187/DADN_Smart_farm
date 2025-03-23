@@ -46,7 +46,7 @@ const LoginForm: React.FC = () => {
           <a
             href="#"
             className="text-green-600 hover:text-green-800 text-sm"
-            onClick={handleForgotPasswordClick} // Gọi hàm điều hướng khi nhấn vào liên kết
+            onClick={handleForgotPasswordClick} 
           >
             Bạn quên mật khẩu?
           </a>
