@@ -6,11 +6,9 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 2;
   font-weight: 400;
-  
   color-scheme: light dark;
   color: white;
-  background: linear-gradient(to bottom, #52e078, #001a00); /* Xanh lá -> Đen */
-
+  background: linear-gradient(to bottom, #52e078, #001a00);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -19,11 +17,11 @@
 
 a {
   font-weight: 500;
-  color: #52e078; /* Màu xanh lá */
+  color: #52e078;
   text-decoration: inherit;
 }
 a:hover {
-  color: #3cb464; /* Xanh đậm hơn khi hover */
+  color: #3cb464;
 }
 
 body {
@@ -46,13 +44,13 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #3cb464; /* Nền nút xanh lá */
+  background-color: #3cb464;
   color: white;
   cursor: pointer;
   transition: all 0.25s ease-in-out;
 }
 button:hover {
-  background-color: #2a8048; /* Đậm hơn khi hover */
+  background-color: #2a8048;
   border-color: #52e078;
 }
 button:focus,
@@ -75,32 +73,156 @@ button:focus-visible {
     background-color: #52a85f;
   }
 }
+
 .info-container {
-  background-color: rgba(255, 255, 255, 0.1); /* Màu nền với độ trong suốt */
-  border-radius: 12px; /* Bo góc */
-  padding: 20px; /* Khoảng cách bên trong */
-  max-width: 400px; /* Chiều rộng tối đa */
-  margin: 0 auto; /* Căn giữa */
-  border: 1px solid rgba(255, 255, 255, 0.2); /* Đường viền mờ */
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .info-table {
   display: grid;
-  grid-template-columns: 1fr; /* 1 cột chính */
-  gap: 1rem; /* Khoảng cách giữa các hàng */
-  font-size: 1.5rem; /* Cỡ chữ lớn */
-  font-weight: bold; /* Chữ đậm */
-  color: #ffffff; /* Màu chữ trắng */
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
 }
 
 .info-row {
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 2 cột con */
-  gap: 1rem; /* Khoảng cách giữa 2 cột con */
-  padding: 0.5rem; /* Padding cho từng hàng */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Đường viền dưới mờ */
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.info-row:last-child {
+  border-bottom: none;
 }
 
-.info-row:last-child {
-  border-bottom: none; /* Bỏ đường viền dưới cho hàng cuối */
+.user-profile-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to bottom, #52e078, #001a00);
+  color: white;
+  background-image: url('./assets/npg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+
+.user-info {
+  width: 50%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #52e078;
+  padding-bottom: 1rem;
+}
+
+.user-info-card {
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin-right: 1rem;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.info-row p {
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.info-row span {
+  margin-left: 1rem;
+  font-size: 1.2em;
+  color: white;
+}
+
+/* Nút đăng xuất */
+.logout-button {
+  width: 100%;
+  padding: 1rem;
+  background-color: red;
+  color: white;
+  border-radius: 8px;
+  margin-top: 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+/* Các nút chức năng */
+.function-buttons {
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 20px;
+  width: 45%;
+  padding: 1rem;
+}
+
+.function-btn {
+  background-color: #52e078;
+  color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.function-btn:hover {
+  background-color: #3cb464;
+}
+
+.icon {
+  margin-right: 8px;
+  font-size: 1.2em;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
 }
