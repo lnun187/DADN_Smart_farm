@@ -16,31 +16,30 @@ const NewPasswordPage: React.FC = () => {
         <p className="text-gray-700 mb-6 text-center">Vui lòng nhập mật khẩu mới của bạn.</p>
         <form className="space-y-6">
           <div>
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="new-password">
-              Mật khẩu mới:
-            </label>
+            
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="new-password"
               type="password"
               placeholder="Nhập mật khẩu mới"
+              style={{ width: '368px', height: '40px', borderRadius: '15px', marginBottom: '15px' }}
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="confirm-password">
-              Xác nhận mật khẩu:
-            </label>
+            
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="confirm-password"
               type="password"
-              placeholder="Nhập lại mật khẩu mới"
+              placeholder="Xác nhận mật khẩu"
+              style={{ width: '368px', height: '40px', borderRadius: '15px', marginBottom: '15px' }}
             />
           </div>
           <button
             className="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
-            type="button" // Thay đổi type thành "button" để tránh submit form
+            type="button" 
             onClick={handleConfirmClick} // Xử lý sự kiện khi nhấn nút "Xác nhận"
+            style={{borderRadius: '15px'}}
           >
             Xác nhận
           </button>

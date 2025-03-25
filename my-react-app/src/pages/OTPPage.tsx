@@ -14,19 +14,18 @@ const OtpPage: React.FC = () => {
         <h2 className="text-3xl font-bold text-green-800 mb-8 text-center">Nhập mã OTP</h2>
         <p className="text-gray-700 mb-6 text-center">Vui lòng nhập mã OTP đã được gửi đến số điện thoại của bạn.</p>
         <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="otp">
-            Mã OTP:
-          </label>
           <input
             className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
             id="otp"
             type="text"
             placeholder="Nhập mã OTP"
+            style={{ width: '368px', height: '40px', borderRadius: '15px', marginBottom: '15px' }}
           />
         </div>
         <button
           className="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
           onClick={handleConfirmClick} // Xử lý sự kiện khi nhấn nút "Xác nhận"
+          style={{borderRadius: '15px'}}
         >
           Xác nhận
         </button>

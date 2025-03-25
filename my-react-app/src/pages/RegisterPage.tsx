@@ -7,63 +7,58 @@ const RegisterPage: React.FC = () => {
         <h2 className="text-3xl font-bold text-green-800 mb-8 text-center">Đăng Ký Tài Khoản</h2>
         <form className="space-y-6">
           <div>
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="fullname">
-              Họ và Tên
-            </label>
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="fullname"
               type="text"
               placeholder="Nhập họ và tên"
+              style={{ width: '368px', height: '40px', borderRadius: '15px', marginBottom: '15px' }}
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="phone">
-              Số Điện Thoại
-            </label>
+
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="phone"
               type="text"
               placeholder="Nhập số điện thoại"
+              style={{ width: '368px', height: '40px', borderRadius: '15px', marginBottom: '15px' }}
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="email">
-              Email
-            </label>
+            
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="email"
               type="email"
               placeholder="Nhập email"
+              style={{ width: '368px', height: '40px', borderRadius: '15px', marginBottom: '15px' }}
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="password">
-              Mật Khẩu
-            </label>
+           
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="password"
               type="password"
               placeholder="Nhập mật khẩu"
+              style={{ width: '368px', height: '40px', borderRadius: '15px', marginBottom: '15px' }}
             />
           </div>
           <div>
-            <label className="block text-gray-700 text-sm font-semibold mb-2" htmlFor="confirmPassword">
-              Nhập Lại Mật Khẩu
-            </label>
+          
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="confirmPassword"
               type="password"
               placeholder="Nhập lại mật khẩu"
+              style={{ width: '368px', height: '40px', borderRadius: '15px', marginBottom: '15px' }}
             />
           </div>
           <button
             className="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
             type="submit"
+            style={{borderRadius: 15 }}
           >
             Đăng Ký
           </button>
