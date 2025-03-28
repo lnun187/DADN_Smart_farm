@@ -4,8 +4,6 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Thông tin Adafruit IO
-const ADAFRUIT_USERNAME = 'lnun187';
-const ADAFRUIT_KEY = 'thay key vào đây';
 // const ADAFRUIT_USERNAME = 'ivanru';
 // const ADAFRUIT_KEY = 'aio_PZkk338TJbPRk19F41EFxu84pfCT';
 const FEED_NAMES = ['DADN_DHT20_HUM', 'DADN_DHT20_TEMP', 'DADN_LIGHT_SENSOR', 'DADN_SOIL_MOISTURE', 'DADN_FAN', 'DADN_RGB_LED'];
@@ -28,7 +26,8 @@ mongoose.connect(process.env.MONGODB_URI, {
 //Route Setup
 const recordRoutes = require('./routes/record');
 app.use('/api/record', recordRoutes);
-
+const authRoutes = require("./routes/account");
+app.use("/auth", authRoutes);
 
 // Import các schema
 const Record = require('./models/record');
@@ -40,8 +39,8 @@ const LightRecord = require('./models/light_Record');
 
 // Kết nối tới Adafruit IO MQTT
 const client = mqtt.connect(MQTT_URL, {
-    username: ADAFRUIT_USERNAME,
-    password: ADAFRUIT_KEY
+    username: process.env.ADAFRUIT_USERNAME,
+    password: process.env.ADAFRUIT_KEY
 });
 
 client.on('connect', () => {
@@ -49,7 +48,7 @@ client.on('connect', () => {
 
     // Subscribe vào các feed
     FEED_NAMES.forEach(feed => {
-        const topic = `${ADAFRUIT_USERNAME}/feeds/${feed}`;
+        const topic = `${process.env.ADAFRUIT_USERNAME}/feeds/${feed}`;
         client.subscribe(topic, (err) => {
             if (err) console.error(`Lỗi khi subscribe vào ${feed}:`, err);
             else console.log(`Đã subscribe vào feed: ${feed}`);
