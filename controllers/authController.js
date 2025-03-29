@@ -23,12 +23,12 @@ const login = async (req, res) => {
         const { username, password } = req.body;
 
         // Tìm user trong database
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ User_Name: username });
         if (!user) return res.status(401).json({ message: "User not found" });
 
         // Giải mã password trong DB
-        const decryptedPassword = decryptPassword(user.password);
-
+        const decryptedPassword = decryptPassword(user.HashPassword);
+        
         // Kiểm tra password nhập vào
         if (password !== decryptedPassword) {
             return res.status(401).json({ message: "Invalid credentials" });

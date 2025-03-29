@@ -1,5 +1,6 @@
 const fs = require("fs");
 const crypto = require("crypto");
+require('dotenv').config();
 
 // Đọc private key & public key từ file
 const privateKey = fs.readFileSync("config/keys/private.pem", "utf8");
@@ -22,6 +23,7 @@ const decryptPassword = (encryptedPassword) => {
     const decrypted = crypto.privateDecrypt(
         {
             key: privateKey,
+            passphrase: process.env.PRIVATE_KEY_PASSPHRASE,
             padding: crypto.constants.RSA_PKCS1_OAEP_PADDING,
         },
         Buffer.from(encryptedPassword, "base64")
