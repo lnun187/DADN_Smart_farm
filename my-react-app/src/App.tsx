@@ -9,6 +9,7 @@ import OtpPage from "./pages/OTPPage";
 import NewPasswordPage from "./pages/NewPassword";
 import PlantDetails from "./details/PlanDetails";
 import UserProfilePage from "./pages/UserProfilePage";
+import PlanManagement from "./pages/PlanManagement"
 
 const Layout: React.FC = () => {
   const location = useLocation();
@@ -27,6 +28,7 @@ const Layout: React.FC = () => {
         <Route path="/new-password" element={<NewPasswordPage />} />
         <Route path="/plan-details" element={<PlantDetails />} />
         <Route path="/user-profile" element={<UserProfilePage />} />
+        <Route path="/plan-manage" element={<PlanManagement />} /> 
       </Routes>
     </div>
   );
