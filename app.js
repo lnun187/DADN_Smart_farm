@@ -4,15 +4,19 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 // Thông tin Adafruit IO
+const ADAFRUIT_USERNAME = 'lnun187';
+const ADAFRUIT_KEY = 'thay key vào đây';
 // const ADAFRUIT_USERNAME = 'ivanru';
 // const ADAFRUIT_KEY = 'aio_PZkk338TJbPRk19F41EFxu84pfCT';
-const FEED_NAMES = ['DADN_DHT20_HUM', 'DADN_DHT20_TEMP', 'DADN_LIGHT_SENSOR', 'DADN_SOIL_MOISTURE', 'DADN_FAN', 'DADN_RGB_LED'];
+const FEED_NAMES = ['DADN_DHT20_HUM', 'DADN_DHT20_TEMP', 
+    'DADN_LIGHT_SENSOR', 'DADN_SOIL_MOISTURE', 
+    'DADN_FAN', 'DADN_RGB_LED','DADN_PUMP1', 'DADN_PUMP2'];
 const MQTT_URL = `mqtts://io.adafruit.com`;
 
 // Setup MongoDB và Express
 const app = express();
 const PORT = 3001;
-
+            
 // Middleware
 app.use(express.json());
 
@@ -26,8 +30,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 //Route Setup
 const recordRoutes = require('./routes/record');
 app.use('/api/record', recordRoutes);
-const authRoutes = require("./routes/account");
-app.use("/auth", authRoutes);
+
 
 // Import các schema
 const Record = require('./models/record');
@@ -35,7 +38,10 @@ const SoilRecord = require('./models/soil_Record');
 const HumidityRecord = require('./models/hum_Record');
 const TemperatureRecord = require('./models/temp_Record');
 const LightRecord = require('./models/light_Record');
-// const FanRecord = require('./models/')
+const FanRecord = require('./models/fan_Record');
+const LedRecord = require('./models/led_Record');
+const Pump1Record = require('./models/pump1_Record');
+const Pump2Record = require('./models/pump2_Record');
 
 // Kết nối tới Adafruit IO MQTT
 const client = mqtt.connect(MQTT_URL, {
@@ -91,10 +97,26 @@ client.on("message", async (topic, message) => {
                 console.log("Đã lưu dữ liệu độ ẩm đất vào MongoDB.");
                 break;
 
-            // case "DADN_FAN":
-            //     await FanRecord.create({ RC_Id: newRecord._id, Value: value });
-            //     console.log("Đã lưu trạng thái quạt vào MongoDB.");
-            //     break;
+            case "DADN_FAN":
+                await FanRecord.create({ RC_Id: newRecord._id, Value: value });
+                console.log("Đã lưu trạng thái quạt vào MongoDB.");
+                break;
+
+            case "DADN_RGB_LED":
+                await LedRecord.create({ RC_Id: newRecord._id, Value: value });
+                console.log("Đã lưu trạng thái đèn vào MongoDB.");
+                break;
+
+            case "DADN_PUMP1":
+                await Pump1Record.create({ RC_Id: newRecord._id, Value: value });
+                console.log("Đã lưu trạng thái máy bơm nước 1 vào MongoDB.");
+                break;
+
+            case "DADN_PUMP2":
+                await Pump2Record.create({ RC_Id: newRecord._id, Value: value });
+                console.log("Đã lưu trạng thái máy bơm nước 2 vào MongoDB.");
+                break;
+                
 
             default:
                 console.warn(`Không có schema phù hợp cho feed: ${feed}`);
