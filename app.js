@@ -31,6 +31,8 @@ mongoose.connect(process.env.MONGODB_URI, {
 const recordRoutes = require('./routes/record');
 app.use('/api/record', recordRoutes);
 
+const adminRoutes = require('./routes/admin');
+app.use('/api/control', adminRoutes);
 
 // Import các schema
 const Record = require('./models/record');
@@ -45,8 +47,8 @@ const Pump2Record = require('./models/pump2_Record');
 
 // Kết nối tới Adafruit IO MQTT
 const client = mqtt.connect(MQTT_URL, {
-    username: process.env.ADAFRUIT_USERNAME,
-    password: process.env.ADAFRUIT_KEY
+    username: ADAFRUIT_USERNAME,
+    password: ADAFRUIT_KEY
 });
 
 client.on('connect', () => {
@@ -54,7 +56,7 @@ client.on('connect', () => {
 
     // Subscribe vào các feed
     FEED_NAMES.forEach(feed => {
-        const topic = `${process.env.ADAFRUIT_USERNAME}/feeds/${feed}`;
+        const topic = `${ADAFRUIT_USERNAME}/feeds/${feed}`;
         client.subscribe(topic, (err) => {
             if (err) console.error(`Lỗi khi subscribe vào ${feed}:`, err);
             else console.log(`Đã subscribe vào feed: ${feed}`);
