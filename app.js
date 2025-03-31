@@ -34,6 +34,9 @@ app.use('/api/record', recordRoutes);
 const adminRoutes = require('./routes/admin');
 app.use('/api/control', adminRoutes);
 
+const authRoutes = require("./routes/account");
+app.use("/auth", authRoutes);
+
 // Import các schema
 const Record = require('./models/record');
 const SoilRecord = require('./models/soil_Record');
