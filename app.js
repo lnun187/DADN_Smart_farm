@@ -5,7 +5,7 @@ require('dotenv').config();
 
 // Thông tin Adafruit IO
 const ADAFRUIT_USERNAME = 'lnun187';
-const ADAFRUIT_KEY = 'thay key vào đây';
+const ADAFRUIT_KEY = 'aio_thrZ093ZRs4j8KQgtuUpmOq9pnTD';
 // const ADAFRUIT_USERNAME = 'ivanru';
 // const ADAFRUIT_KEY = 'aio_PZkk338TJbPRk19F41EFxu84pfCT';
 const FEED_NAMES = ['DADN_DHT20_HUM', 'DADN_DHT20_TEMP', 
