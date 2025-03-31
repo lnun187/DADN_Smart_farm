@@ -5,7 +5,7 @@ const ForgotPasswordForm: React.FC = () => {
   const navigate = useNavigate();
 
   const handleOkClick = () => {
-    navigate('/otp'); // Điều hướng sang trang nhập mã OTP
+    navigate('/new-password'); // Điều hướng sang trang nhập mã OTP
   };
 
   return (
@@ -17,9 +17,9 @@ const ForgotPasswordForm: React.FC = () => {
 
           <input
             className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
-            id="phone"
+            id="email"
             type="text"
-            placeholder="Nhập số điện thoại"
+            placeholder="Nhập tài khoản của bạn"
             style={{ width: '368px', height: '40px', borderRadius: '15px', marginBottom: '15px' }}
           />
         </div>
