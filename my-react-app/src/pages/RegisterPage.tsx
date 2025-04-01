@@ -1,6 +1,13 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const RegisterPage: React.FC = () => {
+  const navigate = useNavigate();
+
+  const Submit = () => {
+    navigate('/login'); // Điều hướng sang trang nhập mã OTP
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-green-100 to-green-200 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-2xl max-w-md w-full">
@@ -16,7 +23,6 @@ const RegisterPage: React.FC = () => {
             />
           </div>
           <div>
-
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="phone"
@@ -26,7 +32,6 @@ const RegisterPage: React.FC = () => {
             />
           </div>
           <div>
-            
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="email"
@@ -36,7 +41,6 @@ const RegisterPage: React.FC = () => {
             />
           </div>
           <div>
-           
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="password"
@@ -46,7 +50,6 @@ const RegisterPage: React.FC = () => {
             />
           </div>
           <div>
-          
             <input
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:outline-none focus:border-green-500"
               id="confirmPassword"
@@ -57,8 +60,9 @@ const RegisterPage: React.FC = () => {
           </div>
           <button
             className="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors"
-            type="submit"
+            onClick={Submit}
             style={{borderRadius: 15 }}
+            type="button"
           >
             Đăng Ký
           </button>
