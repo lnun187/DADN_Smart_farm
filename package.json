@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@tailwindcss/vite": "^4.1.1",
     "axios": "^1.8.3",
     "crypto": "^1.0.1",
     "dotenv": "^16.4.7",
@@ -19,6 +20,9 @@
     "mqtt": "^5.10.4"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "autoprefixer": "^10.4.21",
+    "nodemon": "^3.1.9",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.1"
   }
 }

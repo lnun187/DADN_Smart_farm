@@ -1,20 +1,21 @@
 import React, { useState } from "react";
+import axios from "axios";
 import Plant1 from "../assets/1.jpg";
 import Plant2 from "../assets/2.jpg";
 import Plant3 from "../assets/3.jpg";
 import Plant4 from "../assets/4.jpg";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import LightControl from "../details/LightControl";
-import ConnectControl from "../details/ConnectControl";
-import HumidityControl from "../details/HumidityControl";
-import WaterControl from "../details/WaterLevelControl";
-import TemperatureControl from "../details/TemperatureControl";
 
 const images = [Plant1, Plant2, Plant3, Plant4];
 
 const ManagementPage: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activePopup, setActivePopup] = useState<"light" | "connect" | "humidity" | "water" | "temperature" | null>(null);
+
+  // Quạt - Speed, Máy bơm - On/Off, Ánh sáng - Màu sắc
+  const [fanSpeed, setFanSpeed] = useState(150);  // Giá trị tốc độ quạt
+  const [pumpStatus, setPumpStatus] = useState(false); // Trạng thái máy bơm
+  const [ledColor, setLedColor] = useState("#FF0000"); // Màu của đèn LED
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
@@ -26,6 +27,16 @@ const ManagementPage: React.FC = () => {
 
   const togglePopup = (type: "light" | "connect" | "humidity" | "water" | "temperature") => {
     setActivePopup(activePopup === type ? null : type);
+  };
+
+  const sendCommand = async (device: string, command: any) => {
+    try {
+      await axios.post("http://localhost:3001/api/control/device", { device, command });
+      alert(`${device} command sent successfully!`);
+    } catch (error) {
+      console.error("Error sending command:", error);
+      alert("Failed to send command.");
+    }
   };
 
   return (
@@ -53,11 +64,56 @@ const ManagementPage: React.FC = () => {
 
           {activePopup && (
             <div className="bg-white p-6 rounded-xl shadow-2xl border-4 w-[380px] h-[230px] ml-6">
-              {activePopup === "light" && <LightControl />}
-              {activePopup === "connect" && <ConnectControl />}
-              {activePopup === "humidity" && <HumidityControl />}
-              {activePopup === "water" && <WaterControl />}
-              {activePopup === "temperature" && <TemperatureControl />}
+              {activePopup === "light" && (
+                <div>
+                  <label className="block mb-2">Chọn màu LED</label>
+                  <input
+                    type="color"
+                    value={ledColor}
+                    onChange={(e) => setLedColor(e.target.value)}
+                    className="w-full h-10"
+                  />
+                  <button
+                    onClick={() => sendCommand("led", ledColor)}
+                    className="mt-4 p-2 w-full bg-green-500 text-white rounded-md"
+                  >
+                    Gửi lệnh LED
+                  </button>
+                </div>
+              )}
+              {activePopup === "temperature" && (
+                <div>
+                  <label className="block mb-2">Tốc độ quạt (0-250)</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="250"
+                    value={fanSpeed}
+                    onChange={(e) => setFanSpeed(Number(e.target.value))}
+                    className="w-full"
+                  />
+                  <button
+                    onClick={() => sendCommand("fan", fanSpeed)}
+                    className="mt-4 p-2 w-full bg-green-500 text-white rounded-md"
+                  >
+                    Gửi lệnh quạt
+                  </button>
+                </div>
+              )}
+              {activePopup === "water" && (
+                <div>
+                  <label className="block mb-2">Máy bơm</label>
+                  <button
+                    onClick={() => {
+                      setPumpStatus(!pumpStatus);
+                      sendCommand("pump1", pumpStatus ? 0 : 1);
+                    }}
+                    className={`p-2 w-full ${pumpStatus ? "bg-red-500" : "bg-green-500"} text-white rounded-md`}
+                  >
+                    {pumpStatus ? "Tắt máy bơm" : "Bật máy bơm"}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -67,26 +123,16 @@ const ManagementPage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-2 mt-4">
-          {["Độ ẩm", "Nhiệt độ", "Mức nước", "Kết nối", "Ánh sáng"].map((label, index) => (
+          {[
+            { label: "Quạt", device: "fan" },
+            { label: "Máy bơm", device: "pump1" },
+            { label: "Ánh sáng", device: "led" }
+          ].map(({ label, device }, index) => (
             <button
               key={index}
-              className={`p-4 rounded-md shadow-md border-2 transition duration-200 ${
-                (label === "Ánh sáng" && activePopup === "light") ||
-                (label === "Kết nối" && activePopup === "connect") ||
-                (label === "Độ ẩm" && activePopup === "humidity") ||
-                (label === "Mức nước" && activePopup === "water") ||
-                (label === "Nhiệt độ" && activePopup === "temperature")
-                  ? "border-green-500 bg-green-100"
-                  : "border-gray-200 hover:border-green-500 bg-white"
-              }`}
+              className="p-4 rounded-md shadow-md border-2 transition duration-200 border-gray-200 hover:border-green-500 bg-white"
               style={{ marginRight: "10px" }}
-              onClick={() => {
-                if (label === "Ánh sáng") togglePopup("light");
-                if (label === "Kết nối") togglePopup("connect");
-                if (label === "Độ ẩm") togglePopup("humidity");
-                if (label === "Mức nước") togglePopup("water");
-                if (label === "Nhiệt độ") togglePopup("temperature");
-              }}
+              onClick={() => togglePopup(device === "fan" ? "temperature" : device === "pump1" ? "water" : "light")}
             >
               {label}
             </button>

@@ -9,16 +9,20 @@ import OtpPage from "./pages/OTPPage";
 import NewPasswordPage from "./pages/NewPassword";
 import PlantDetails from "./details/PlanDetails";
 import UserProfilePage from "./pages/UserProfilePage";
-import PlanManagement from "./pages/PlanManagement"
+import PlanManagement from "./pages/PlanManagement";
+import Navbar from "./navbar/navbarbasic";
 
 const Layout: React.FC = () => {
   const location = useLocation();
-  const hideHeaderRoutes = ["/user-profile"]; // Các route không hiển thị Header
-  const isHomePage = location.pathname === "/"; // Kiểm tra nếu là trang chủ
+  
+  const showHeader = ["/login", "/register", "/forgot-password", "/otp", "/new-password", "/"].includes(location.pathname);
+
+  const hideNavbar = ["/login", "/register", "/forgot-password", "/otp", "/new-password", "/"].includes(location.pathname);
 
   return (
-    <div className={isHomePage ? "background-home" : ""}>
-      {!hideHeaderRoutes.includes(location.pathname) && <Header />}
+    <div className={location.pathname === "/" ? "background-home" : ""}>
+      {!hideNavbar && <Navbar />}
+      {showHeader && <Header />} 
       <Routes>
         <Route path="/" element={<MainContent />} />
         <Route path="/register" element={<RegisterPage />} />
@@ -28,7 +32,7 @@ const Layout: React.FC = () => {
         <Route path="/new-password" element={<NewPasswordPage />} />
         <Route path="/plan-details" element={<PlantDetails />} />
         <Route path="/user-profile" element={<UserProfilePage />} />
-        <Route path="/plan-manage" element={<PlanManagement />} /> 
+        <Route path="/plan-manage" element={<PlanManagement />} />
       </Routes>
     </div>
   );
