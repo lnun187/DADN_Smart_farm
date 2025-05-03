@@ -1,21 +1,24 @@
 import React from "react";
-import { FaCog, FaList, FaInfoCircle, FaRegLightbulb, FaBell } from "react-icons/fa";
+import { FaCog, FaList, FaInfoCircle, FaRegLightbulb, FaBell, FaChartBar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 const UserProfilePage: React.FC = () => {
   const navigate = useNavigate(); 
 
-  const handleInfoClick = () => {
-    navigate('/plan-details'); 
-  };
-
-  const handleManageClick = () => {
-    navigate('/plan-manage');
-  };
-
   const handleLogout = () => {
     navigate('/'); // Điều hướng về trang chính
   };
+
+  const handleDashboard = () => {
+    navigate('/dashboard'); // Điều hướng về trang dashboard
+  };
+
+  const handleAnalysisClick = () => {
+    navigate('/superchart'); 
+  };
+  const handleProcessKick = () => {
+    navigate('/process'); // Trang phân tích (gộp thông số + quản lý)
+  }
 
   return (
     <div className="user-profile-container">
@@ -58,22 +61,17 @@ const UserProfilePage: React.FC = () => {
       </div>
 
       <div className="function-buttons">
-        <button className="function-btn">
+        <button className="function-btn" onClick={handleDashboard}>
           <FaList className="icon" />
-          Thể loại
+          Tổng quát
         </button>
 
-        <button className="function-btn" onClick={handleInfoClick}>
-          <FaInfoCircle className="icon" />
-          Thông số
+        <button className="function-btn" onClick={handleAnalysisClick}>
+          <FaChartBar className="icon" />
+          Phân tích
         </button>
 
-        <button className="function-btn" onClick={handleManageClick}>
-          <FaCog className="icon" />
-          Quản lý
-        </button>
-
-        <button className="function-btn">
+        <button className="function-btn" onClick={handleProcessKick}>
           <FaRegLightbulb className="icon" />
           Quá trình
         </button>

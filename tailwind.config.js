@@ -4,5 +4,11 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  
+}
+module.exports = {
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
+  // ...
 }

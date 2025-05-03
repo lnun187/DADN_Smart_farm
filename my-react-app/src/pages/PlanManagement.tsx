@@ -1,29 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Plant1 from "../assets/1.jpg";
-import Plant2 from "../assets/2.jpg";
-import Plant3 from "../assets/3.jpg";
-import Plant4 from "../assets/4.jpg";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-
-const images = [Plant1, Plant2, Plant3, Plant4];
 
 const ManagementPage: React.FC = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [activePopup, setActivePopup] = useState<"light" | "connect" | "humidity" | "water" | "temperature" | null>(null);
+  const [activePopup, setActivePopup] = useState<
+    "light" | "connect" | "humidity" | "water" | "temperature" | null
+  >(null);
 
-  // Quạt - Speed, Máy bơm - On/Off, Ánh sáng - Màu sắc
-  const [fanSpeed, setFanSpeed] = useState(150);  // Giá trị tốc độ quạt
-  const [pumpStatus, setPumpStatus] = useState(false); // Trạng thái máy bơm
-  const [ledColor, setLedColor] = useState("#FF0000"); // Màu của đèn LED
-
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
-  };
+  const [fanSpeed, setFanSpeed] = useState(150);
+  const [pumpStatus, setPumpStatus] = useState(false);
+  const [ledColor, setLedColor] = useState("#FF0000");
 
   const togglePopup = (type: "light" | "connect" | "humidity" | "water" | "temperature") => {
     setActivePopup(activePopup === type ? null : type);
@@ -41,29 +26,13 @@ const ManagementPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-screen w-screen p-4">
-      <div className="bg-gradient-to-b from-green-300 to-green-900 p-6 rounded-xl shadow-lg w-[80%] max-w-4xl relative">
-        <div className="flex justify-between items-center mb-4">Quản lý</div>
-
-        <div className="flex items-start">
-          <div className={`flex flex-col items-center relative transition-transform duration-300 ${activePopup ? "scale-75" : "scale-100"}`} style={{ marginLeft: "90px" }}>
-            <img
-              src={images[currentIndex]}
-              alt={`Plant ${currentIndex + 1}`}
-              className="rounded-lg object-cover shadow-md border-2 border-white transition-transform duration-300"
-              style={{ width: "366px", height: "216px", marginRight: "20px", marginLeft: "20px", paddingTop: "30px" }}
-            />
-            <div className="flex justify-center mt-2 space-x-4">
-              <button onClick={handlePrev} className="bg-white p-2 rounded-full shadow-md hover:bg-gray-200" style={{ marginLeft: "20px", marginRight: "230px" }}>
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button onClick={handleNext} className="bg-white p-2 rounded-full shadow-md hover:bg-gray-200">
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </div>
-          </div>
-
+      <div
+        className="bg-gradient-to-b from-green-300 to-green-900 p-6 rounded-xl shadow-lg w-[80%] max-w-4xl relative"
+        style={{ transform: "translateX(725px) translateY(-470px)" }}
+      >
+        <div className="flex items-start justify-center">
           {activePopup && (
-            <div className="bg-white p-6 rounded-xl shadow-2xl border-4 w-[380px] h-[230px] ml-6">
+            <div className="bg-white p-6 rounded-xl shadow-2xl border-4 w-[380px] h-[230px]">
               {activePopup === "light" && (
                 <div>
                   <label className="block mb-2">Chọn màu LED</label>
@@ -72,10 +41,12 @@ const ManagementPage: React.FC = () => {
                     value={ledColor}
                     onChange={(e) => setLedColor(e.target.value)}
                     className="w-full h-10"
+                    style={{ marginLeft: "6px" , marginRight: "6px"}}
                   />
                   <button
                     onClick={() => sendCommand("led", ledColor)}
                     className="mt-4 p-2 w-full bg-green-500 text-white rounded-md"
+                    
                   >
                     Gửi lệnh LED
                   </button>
@@ -109,6 +80,7 @@ const ManagementPage: React.FC = () => {
                       sendCommand("pump1", pumpStatus ? 0 : 1);
                     }}
                     className={`p-2 w-full ${pumpStatus ? "bg-red-500" : "bg-green-500"} text-white rounded-md`}
+                    style={{ marginLeft: "6px" }}
                   >
                     {pumpStatus ? "Tắt máy bơm" : "Bật máy bơm"}
                   </button>
@@ -118,8 +90,8 @@ const ManagementPage: React.FC = () => {
           )}
         </div>
 
-        <div className="bg-green-800 p-6 mt-4 rounded-lg shadow-md h-40 flex justify-center items-center border-2 border-green-700">
-          <p className="text-white">Thông tin chính</p>
+        <div className="bg-green-800 p-6 mt-6 rounded-lg shadow-md h-40 flex justify-center items-center border-2 border-green-700">
+          <h2 className="text-xl font-bold mb-3">Thông tin chính</h2>
         </div>
 
         <div className="grid grid-cols-2 gap-2 mt-4">
@@ -131,8 +103,16 @@ const ManagementPage: React.FC = () => {
             <button
               key={index}
               className="p-4 rounded-md shadow-md border-2 transition duration-200 border-gray-200 hover:border-green-500 bg-white"
-              style={{ marginRight: "10px" }}
-              onClick={() => togglePopup(device === "fan" ? "temperature" : device === "pump1" ? "water" : "light")}
+              style={{ marginLeft: "6px", marginRight: "6px" }}
+              onClick={() =>
+                togglePopup(
+                  device === "fan"
+                    ? "temperature"
+                    : device === "pump1"
+                    ? "water"
+                    : "light"
+                )
+              }
             >
               {label}
             </button>
