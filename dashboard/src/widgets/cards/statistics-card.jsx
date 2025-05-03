@@ -7,9 +7,12 @@ import {
 } from "@material-tailwind/react";
 import PropTypes from "prop-types";
 
-export function StatisticsCard({ color, icon, title, value, footer }) {
+export function StatisticsCard({ color, icon, title, value, footer, onClick }) {
   return (
-    <Card className="border border-blue-gray-100 shadow-sm">
+    <Card
+      className="border border-blue-gray-100 shadow-sm cursor-pointer hover:shadow-md transition"
+      onClick={onClick}
+    >
       <CardHeader
         variant="gradient"
         color={color}
@@ -39,6 +42,7 @@ export function StatisticsCard({ color, icon, title, value, footer }) {
 StatisticsCard.defaultProps = {
   color: "blue",
   footer: null,
+  onClick: undefined,
 };
 
 StatisticsCard.propTypes = {
@@ -68,6 +72,7 @@ StatisticsCard.propTypes = {
   title: PropTypes.node.isRequired,
   value: PropTypes.node.isRequired,
   footer: PropTypes.node,
+  onClick: PropTypes.func,
 };
 
 StatisticsCard.displayName = "/src/widgets/cards/statistics-card.jsx";
