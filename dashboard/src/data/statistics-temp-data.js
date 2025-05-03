@@ -1,17 +1,17 @@
 import { chartsConfig } from "@/configs";
 
-const weeklyHumidityChart = {
+const weeklyTemperatureChart = {
   type: "bar",
   height: 220,
   series: [
     {
-      name: "Độ ẩm (%)",
-      data: [55, 48, 60, 52, 70, 65, 50],
+      name: "Nhiệt độ (°C)",
+      data: [29, 30, 31, 32, 33, 31, 30],
     },
   ],
   options: {
     ...chartsConfig,
-    colors: "#4caf50",
+    colors: "#f44336",
     plotOptions: {
       bar: {
         columnWidth: "16%",
@@ -25,18 +25,18 @@ const weeklyHumidityChart = {
   },
 };
 
-const monthlyAverageHumidityChart = {
+const monthlyAverageTemperatureChart = {
   type: "line",
   height: 220,
   series: [
     {
-      name: "Độ ẩm trung bình (%)",
-      data: [60, 62, 58, 65, 70, 68, 72, 69, 66],
+      name: "Nhiệt độ trung bình (°C)",
+      data: [26, 27, 28, 30, 32, 31, 33, 32, 30],
     },
   ],
   options: {
     ...chartsConfig,
-    colors: ["#0288d1"],
+    colors: ["#ff9800"],
     stroke: {
       lineCap: "round",
     },
@@ -52,18 +52,18 @@ const monthlyAverageHumidityChart = {
   },
 };
 
-const monthlyMinHumidityChart = {
+const monthlyMaxTemperatureChart = {
   type: "line",
   height: 220,
   series: [
     {
-      name: "Độ ẩm thấp nhất (%)",
-      data: [45, 48, 50, 43, 49, 46, 52, 50, 48],
+      name: "Nhiệt độ cao nhất (°C)",
+      data: [30, 32, 33, 34, 36, 35, 37, 36, 34],
     },
   ],
   options: {
     ...chartsConfig,
-    colors: ["#ef6c00"],
+    colors: ["#d32f2f"],
     stroke: {
       lineCap: "round",
     },
@@ -79,28 +79,28 @@ const monthlyMinHumidityChart = {
   },
 };
 
-export const statisticsChartsData = [
+export const statisticsTempData = [
   {
     color: "white",
-    title: "Độ ẩm theo tuần",
-    description: "Theo dõi độ ẩm từng ngày",
+    title: "Nhiệt độ theo tuần",
+    description: "Theo dõi nhiệt độ từng ngày",
     footer: "cập nhật hôm nay",
-    chart: weeklyHumidityChart,
+    chart: weeklyTemperatureChart,
   },
   {
     color: "white",
-    title: "Độ ẩm trung bình hàng tháng",
-    description: "Phân tích độ ẩm theo mùa",
+    title: "Nhiệt độ trung bình hàng tháng",
+    description: "Phân tích nhiệt độ theo mùa",
     footer: "cập nhật hôm qua",
-    chart: monthlyAverageHumidityChart,
+    chart: monthlyAverageTemperatureChart,
   },
   {
     color: "white",
-    title: "Độ ẩm thấp nhất",
-    description: "Phát hiện vùng khô hạn",
+    title: "Nhiệt độ cao nhất",
+    description: "Phát hiện thời điểm nắng gắt",
     footer: "cập nhật gần đây",
-    chart: monthlyMinHumidityChart,
+    chart: monthlyMaxTemperatureChart,
   },
 ];
 
-export default statisticsChartsData;
+export default statisticsTempData;
