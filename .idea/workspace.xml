@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="03dadfab-bdd8-4afa-9cc1-95d235321f59" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/my-react-app/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/my-react-app/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-react-app/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/my-react-app/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-react-app/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/my-react-app/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/my-react-app/src/components/dashboard.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2vQZNIgXW4CllmlXVx4iJbpaVJq" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenDatabaseViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "merge-branch",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/ASUS",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlserver"
+    ]
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+</project>
