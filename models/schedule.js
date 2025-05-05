@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
 const scheduleSchema = new mongoose.Schema({
-    Time: String,
-    R_ws: {type: mongoose.Schema.Types.ObjectId, ref: 'Reminder'},
-    US_ws: {type: mongoose.Schema.Types.ObjectId, ref: 'Staff'},
-    UM_ws: {type: mongoose.Schema.Types.ObjectId, ref: 'Manager'},
+    Staff_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Staff'},
+    Manager_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Manager'},
+    W_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Watering'},
 });
 
 module.exports = mongoose.model('Schedule', scheduleSchema);

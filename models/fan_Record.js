@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const fanrecordSchema = new mongoose.Schema({
   RC_Id: { type: mongoose.Schema.Types.ObjectId, ref: 'Record' },
-  Value: String,
+  Fan: String,
 });
 
 module.exports = mongoose.model('FanRecord', fanrecordSchema);
