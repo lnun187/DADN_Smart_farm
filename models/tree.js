@@ -10,8 +10,8 @@ const treeSchema = new mongoose.Schema({
     Humidity_Max: Number,
     Light_Min: Number,
     Light_Max: Number,
-    SoildMoisture_Min: Number,
-    SoildMoisture_Max: Number,
+    SoilMoisture_Min: Number,
+    SoilMoisture_Max: Number,
     Aid: { type: mongoose.Schema.Types.ObjectId, ref: 'Area' },
 });
 
