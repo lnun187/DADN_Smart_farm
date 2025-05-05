@@ -71,27 +71,6 @@ export function DashboardNavbar() {
           <div className="mr-auto md:mr-4 md:w-56">
             <Input label="Search" />
           </div>
-          
-          {/* Moved Region Selector before Sign In */}
-          <Menu>
-            <MenuHandler>
-              <Button variant="text" color="blue-gray" className="mr-4">
-                Select Region {selectedRegion}
-              </Button>
-            </MenuHandler>
-            <MenuList>
-              {[1, 2, 3, 4].map((region) => (
-                <MenuItem
-                  key={region}
-                  onClick={() => handleRegionSelect(region)}
-                  className="hover:bg-blue-500 hover:text-white"
-                >
-                  Region {region}
-                </MenuItem>
-              ))}
-            </MenuList>
-          </Menu>
-
           <IconButton
             variant="text"
             color="blue-gray"
@@ -114,6 +93,25 @@ export function DashboardNavbar() {
               <UserCircleIcon className="h-5 w-5 text-blue-gray-500" />
             </IconButton>
           </Link>
+
+          <Menu>
+            <MenuHandler>
+              <Button variant="text" color="blue-gray" className="mr-4">
+                Select Region {selectedRegion}
+              </Button>
+            </MenuHandler>
+            <MenuList>
+              {[1, 2, 3, 4].map((region) => (
+                <MenuItem
+                  key={region}
+                  onClick={() => handleRegionSelect(region)}
+                  className="hover:bg-blue-500 hover:text-white"
+                >
+                  Region {region}
+                </MenuItem>
+              ))}
+            </MenuList>
+          </Menu>
 
           <Menu>
             <MenuHandler>

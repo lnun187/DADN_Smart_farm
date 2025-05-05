@@ -1,10 +1,10 @@
 export const projectsData = [
   {
-    img: "/img/home-decor-1.jpeg",
-    title: "Modern",
-    tag: "Project #1",
+    img: "/img/vuonhoa1.png",
+    title: "Vườn cây hướng dương",
+    tag: "Khu vực #1",
     description:
-      "As Uber works through a huge amount of internal management turmoil.",
+      "Là loài thực vật thuộc họ cúc, thân cây cao khoảng 1,5 – 1,7m. Thân cây mọc thẳng, mềm mại, màu xanh nhạt, phủ đầy lông tơ, gây ngứa nếu tiếp xúc với da nhạy cảm.",
     route: "/dashboard/profile",
     members: [
       { img: "/img/team-1.jpeg", name: "Romina Hadid" },
@@ -12,13 +12,18 @@ export const projectsData = [
       { img: "/img/team-3.jpeg", name: "Jessica Doe" },
       { img: "/img/team-4.jpeg", name: "Alexander Smith" },
     ],
+    details: [
+      "Tên khoa học: Helianthus annuus",
+      "Thân cây cao, dễ gãy khi gặp gió lớn",
+      "Thường ra hoa vào mùa hè",
+    ],
   },
   {
-    img: "/img/home-decor-2.jpeg",
-    title: "Scandinavian",
-    tag: "Project #2",
+    img: "/img/vuoncaycaithao.jpg",
+    title: "Vườn cây cải thảo",
+    tag: "Khu vực #2",
     description:
-      "Music is something that every person has his or her own specific opinion about.",
+      "Có nguồn gốc từ miền bắc và Đông Bắc của Trung Quốc. Hiện tại, loài này phân bố rải rác khắp khu vực trái đất như Hàn Quốc, Nhật Bản, châu Âu.",
     route: "/dashboard/profile",
     members: [
       { img: "/img/team-4.jpeg", name: "Alexander Smith" },
@@ -26,13 +31,18 @@ export const projectsData = [
       { img: "/img/team-2.jpeg", name: "Ryan Tompson" },
       { img: "/img/team-1.jpeg", name: "Romina Hadid" },
     ],
+    details: [
+      "Tên khoa học: Brassica rapa pekinensis",
+      "Ưa lạnh, dễ trồng vào mùa đông",
+      "Có thể thu hoạch sau 45-60 ngày",
+    ],
   },
   {
-    img: "/img/home-decor-3.jpeg",
-    title: "Minimalist",
-    tag: "Project #3",
+    img: "/img/cay-lan-y.jpg",
+    title: "Vườn cây lan Ý",
+    tag: "Khu vực #3",
     description:
-      "Different people have different taste, and various types of music.",
+      "Lan Ý có nguồn gốc từ vùng nhiệt đới Nam Mỹ và một số nước Đông Nam Á. Nơi có khí hậu nóng ẩm.",
     route: "/dashboard/profile",
     members: [
       { img: "/img/team-1.jpeg", name: "Romina Hadid" },
@@ -40,21 +50,29 @@ export const projectsData = [
       { img: "/img/team-3.jpeg", name: "Jessica Doe" },
       { img: "/img/team-4.jpeg", name: "Alexander Smith" },
     ],
+    details: [
+      "Tên khoa học: Spathiphyllum wallisii",
+      "Thường ra hoa quanh năm",
+      "Có khả năng lọc không khí tốt",
+    ],
   },
   {
-    img: "/img/home-decor-4.jpeg",
-    title: "Gothic",
-    tag: "Project #4",
+    img: "/img/hoa-dong-tien.jpg",
+    title: "Vườn hoa đồng tiền",
+    tag: "Khu vực #4",
     description:
-      "Why would anyone pick blue over pink? Pink is obviously a better color.",
+      "Hoa đồng tiền, còn gọi là cúc đồng tiền, có tên khoa học là Gerbera, thuộc họ Cúc và chi của nhiều loài cây cảnh.",
     route: "/dashboard/profile",
     members: [
       { img: "/img/team-4.jpeg", name: "Alexander Smith" },
       { img: "/img/team-3.jpeg", name: "Jessica Doe" },
       { img: "/img/team-2.jpeg", name: "Ryan Tompson" },
       { img: "/img/team-1.jpeg", name: "Romina Hadid" },
+    ],
+    details: [
+      "Tên khoa học: Gerbera jamesonii",
+      "Đa dạng màu sắc: đỏ, hồng, cam, vàng,...",
+      "Ưa sáng, thích hợp trồng ngoài trời",
     ],
   },
 ];
-
-export default projectsData;

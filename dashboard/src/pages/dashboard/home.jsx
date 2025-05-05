@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Typography,
   Card,
   CardHeader,
   CardBody,
+  CardFooter,
   IconButton,
   Menu,
   MenuHandler,
@@ -12,11 +13,19 @@ import {
   Avatar,
   Tooltip,
   Progress,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Button,
+  Switch,
 } from "@material-tailwind/react";
 import {
   EllipsisVerticalIcon,
   ArrowUpIcon,
+  LightBulbIcon,
 } from "@heroicons/react/24/outline";
+import { ClockIcon } from "@heroicons/react/24/solid";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
 import {
@@ -26,40 +35,72 @@ import {
   statisticsLuxData,
   projectsTableData,
   ordersOverviewData,
+  projectsData,
 } from "@/data";
-import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
 
 export function Home() {
+  const [openDialog, setOpenDialog] = useState(false);
+  const [fanMode, setFanMode] = useState(true);
+  const [fanPower, setFanPower] = useState(50);
+  const [openPowerDialog, setOpenPowerDialog] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [lightLevel, setLightLevel] = useState(70);
+  const [openLightDialog, setOpenLightDialog] = useState(false);
+  const [openPumpDialog, setOpenPumpDialog] = useState(false);
+  const [pumpPower, setPumpPower] = useState(60); 
+  const [lightColor, setLightColor] = useState("#ffffff");
+
+
+  const handleCardClick = (title) => {
+    if (title === "Chế độ quay") {
+      setOpenDialog(true);
+    } else if (title === "Công suất quạt") {
+      setOpenPowerDialog(true);
+    } else if (title === "Điều chỉnh ánh sáng") {
+      setOpenLightDialog(true);
+    }
+    else if (title === "Điều chỉnh bơm nước") {
+      setOpenPumpDialog(true);
+    }
+    else if (title === "Điều chỉnh ánh sáng") {
+      setOpenLightDialog(true);
+    }
+  };
+  
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-        {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
-          <StatisticsCard
-            key={title}
-            {...rest}
-            title={title}
-            icon={React.createElement(icon, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={footer.color}>{footer.value}</strong>
-                &nbsp;{footer.label}
-              </Typography>
-            }
-          />
-        ))}
+        {statisticsCardsData.map(({ icon, title, footer, value, ...rest }) => {
+          const dynamicValue = title === "Chế độ quay" ? (fanMode ? "ON" : "OFF") : value;
+          return (
+            <div key={title} onClick={() => handleCardClick(title)} className="cursor-pointer">
+              <StatisticsCard
+                {...rest}
+                title={title}
+                value={dynamicValue}
+                icon={React.createElement(icon, {
+                  className: "w-6 h-6 text-white",
+                })}
+                footer={
+                  <Typography className="font-normal text-blue-gray-600">
+                    <strong className={footer.color}>{footer.value}</strong>
+                    &nbsp;{footer.label}
+                  </Typography>
+                }
+              />
+            </div>
+          );
+        })}
       </div>
+
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
         {statisticsChartsData.map((props) => (
           <StatisticsChart
             key={props.title}
             {...props}
             footer={
-              <Typography
-                variant="small"
-                className="flex items-center font-normal text-blue-gray-600"
-              >
+              <Typography variant="small" className="flex items-center font-normal text-blue-gray-600">
                 <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
                 &nbsp;{props.footer}
               </Typography>
@@ -69,229 +110,276 @@ export function Home() {
       </div>
 
       <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-      {statisticsTempData.map((props) => (
-        <StatisticsChart
-          key={props.title}
-          {...props}
-          footer={
-            <Typography
-              variant="small"
-              className="flex items-center font-normal text-blue-gray-600"
-            >
-              <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
-              &nbsp;{props.footer}
-            </Typography>
-          }
-        />
-      ))}
-    </div>
+        {statisticsTempData.map((props) => (
+          <StatisticsChart
+            key={props.title}
+            {...props}
+            footer={
+              <Typography variant="small" className="flex items-center font-normal text-blue-gray-600">
+                <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
+                &nbsp;{props.footer}
+              </Typography>
+            }
+          />
+        ))}
+      </div>
 
-    <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-      {statisticsLuxData.map((props) => (
-        <StatisticsChart
-          key={props.title}
-          {...props}
-          footer={
-            <Typography
-              variant="small"
-              className="flex items-center font-normal text-blue-gray-600"
-            >
-              <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
-              &nbsp;{props.footer}
-            </Typography>
-          }
-        />
-      ))}
-    </div>
+      <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+        {statisticsLuxData.map((props) => (
+          <StatisticsChart
+            key={props.title}
+            {...props}
+            footer={
+              <Typography variant="small" className="flex items-center font-normal text-blue-gray-600">
+                <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
+                &nbsp;{props.footer}
+              </Typography>
+            }
+          />
+        ))}
+      </div>
 
-    
+      {/* Projects Grid */}
+      <div className="px-4 pb-4">
+        <Typography variant="h6" color="blue-gray" className="mb-2">
+          Khu vực
+        </Typography>
+        <Typography variant="small" className="font-normal text-blue-gray-500">
+          Khu vực quản lý
+        </Typography>
+        <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
+          {projectsData.map(({ img, title, description, tag, route, members, details }) => (
+            <Card key={title} color="transparent" shadow={false}>
+              <CardHeader floated={false} color="gray" className="mx-0 mt-0 mb-4 h-64 xl:h-40">
+                <img src={img} alt={title} className="h-full w-full object-cover" />
+              </CardHeader>
+              <CardBody className="py-0 px-1">
+                <Typography variant="small" className="font-normal text-blue-gray-500">
+                  {tag}
+                </Typography>
+                <Typography variant="h5" color="blue-gray" className="mt-1 mb-2">
+                  {title}
+                </Typography>
+                <Typography variant="small" className="font-normal text-blue-gray-500">
+                  {description}
+                </Typography>
+              </CardBody>
+              <CardFooter className="mt-6 flex items-center justify-between py-0 px-1">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedProject({ img, title, description, tag, members, details });
+                    setOpen(true);
+                  }}
+                >
+                  Hiển thị hình ảnh chi tiết
+                </Button>
+                <div>
+                  {members.map(({ img, name }, key) => (
+                    <Tooltip key={name} content={name}>
+                      <Avatar
+                        src={img}
+                        alt={name}
+                        size="xs"
+                        variant="circular"
+                        className={`cursor-pointer border-2 border-white ${key === 0 ? "" : "-ml-2.5"}`}
+                      />
+                    </Tooltip>
+                  ))}
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      <Dialog open={open} handler={() => setOpen(false)} size="lg">
+        {selectedProject && (
+          <>
+            <DialogHeader>{selectedProject.title}</DialogHeader>
+            <DialogBody className="space-y-4">
+              <Typography variant="small" className="text-blue-gray-500">
+                {selectedProject.tag}
+              </Typography>
+              <details className="text-sm text-blue-gray-700">
+                <summary className="cursor-pointer font-medium text-blue-gray-600">Chi tiết mô tả</summary>
+                <ul className="mt-2 list-disc list-inside">
+                  {selectedProject.details?.map((item, index) => (
+                    <li key={index} className="text-lg">{item}</li>
+                  ))}
+                </ul>
+              </details>
+              <div className="flex mt-4">
+                {selectedProject.members.map(({ img, name }, key) => (
+                  <Tooltip key={name} content={name}>
+                    <Avatar
+                      src={img}
+                      alt={name}
+                      size="sm"
+                      variant="circular"
+                      className={`cursor-pointer border-2 border-white ${key === 0 ? "" : "-ml-2.5"}`}
+                    />
+                  </Tooltip>
+                ))}
+              </div>
+            </DialogBody>
+
+            <DialogFooter>
+              <Button variant="text" color="red" onClick={() => setOpen(false)}>
+                Đóng
+              </Button>
+            </DialogFooter>
+          </>
+        )}
+      </Dialog>
+
+      {/* Orders Overview */}
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
-          <CardHeader
-            floated={false}
-            shadow={false}
-            color="transparent"
-            className="m-0 flex items-center justify-between p-6"
-          >
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-1">
-                Projects
-              </Typography>
-              <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
-              >
-                <CheckCircleIcon strokeWidth={3} className="h-4 w-4 text-blue-gray-200" />
-                <strong>30 done</strong> this month
-              </Typography>
-            </div>
-            <Menu placement="left-start">
-              <MenuHandler>
-                <IconButton size="sm" variant="text" color="blue-gray">
-                  <EllipsisVerticalIcon
-                    strokeWidth={3}
-                    fill="currenColor"
-                    className="h-6 w-6"
-                  />
-                </IconButton>
-              </MenuHandler>
-              <MenuList>
-                <MenuItem>Action</MenuItem>
-                <MenuItem>Another Action</MenuItem>
-                <MenuItem>Something else here</MenuItem>
-              </MenuList>
-            </Menu>
-          </CardHeader>
-          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-            <table className="w-full min-w-[640px] table-auto">
-              <thead>
-                <tr>
-                  {["companies", "members", "budget", "completion"].map(
-                    (el) => (
-                      <th
-                        key={el}
-                        className="border-b border-blue-gray-50 py-3 px-6 text-left"
-                      >
-                        <Typography
-                          variant="small"
-                          className="text-[11px] font-medium uppercase text-blue-gray-400"
-                        >
-                          {el}
-                        </Typography>
-                      </th>
-                    )
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {projectsTableData.map(
-                  ({ img, name, members, budget, completion }, key) => {
-                    const className = `py-3 px-5 ${
-                      key === projectsTableData.length - 1
-                        ? ""
-                        : "border-b border-blue-gray-50"
-                    }`;
-
-                    return (
-                      <tr key={name}>
-                        <td className={className}>
-                          <div className="flex items-center gap-4">
-                            <Avatar src={img} alt={name} size="sm" />
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-bold"
-                            >
-                              {name}
-                            </Typography>
-                          </div>
-                        </td>
-                        <td className={className}>
-                          {members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${
-                                  key === 0 ? "" : "-ml-2.5"
-                                }`}
-                              />
-                            </Tooltip>
-                          ))}
-                        </td>
-                        <td className={className}>
-                          <Typography
-                            variant="small"
-                            className="text-xs font-medium text-blue-gray-600"
-                          >
-                            {budget}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <div className="w-10/12">
-                            <Typography
-                              variant="small"
-                              className="mb-1 block text-xs font-medium text-blue-gray-600"
-                            >
-                              {completion}%
-                            </Typography>
-                            <Progress
-                              value={completion}
-                              variant="gradient"
-                              color={completion === 100 ? "green" : "blue"}
-                              className="h-1"
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-              </tbody>
-            </table>
-          </CardBody>
-        </Card>
         <Card className="border border-blue-gray-100 shadow-sm">
-          <CardHeader
-            floated={false}
-            shadow={false}
-            color="transparent"
-            className="m-0 p-6"
-          >
+          <CardHeader floated={false} shadow={false} color="transparent" className="m-0 p-6">
             <Typography variant="h6" color="blue-gray" className="mb-2">
               Orders Overview
             </Typography>
-            <Typography
-              variant="small"
-              className="flex items-center gap-1 font-normal text-blue-gray-600"
-            >
-              <ArrowUpIcon
-                strokeWidth={3}
-                className="h-3.5 w-3.5 text-green-500"
-              />
+            <Typography variant="small" className="flex items-center gap-1 font-normal text-blue-gray-600">
+              <ArrowUpIcon strokeWidth={3} className="h-3.5 w-3.5 text-green-500" />
               <strong>24%</strong> this month
             </Typography>
           </CardHeader>
           <CardBody className="pt-0">
-            {ordersOverviewData.map(
-              ({ icon, color, title, description }, key) => (
-                <div key={title} className="flex items-start gap-4 py-3">
-                  <div
-                    className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${
-                      key === ordersOverviewData.length - 1
-                        ? "after:h-0"
-                        : "after:h-4/6"
-                    }`}
-                  >
-                    {React.createElement(icon, {
-                      className: `!w-5 !h-5 ${color}`,
-                    })}
-                  </div>
-                  <div>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="block font-medium"
-                    >
-                      {title}
-                    </Typography>
-                    <Typography
-                      as="span"
-                      variant="small"
-                      className="text-xs font-medium text-blue-gray-500"
-                    >
-                      {description}
-                    </Typography>
-                  </div>
+            {ordersOverviewData.map(({ icon, color, title, description }, key) => (
+              <div key={title} className="flex items-start gap-4 py-3">
+                <div
+                  className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${
+                    key === ordersOverviewData.length - 1 ? "after:h-0" : "after:h-4/6"
+                  }`}
+                >
+                  {React.createElement(icon, {
+                    className: `!w-5 !h-5 ${color}`,
+                  })}
                 </div>
-              )
-            )}
+                <div>
+                  <Typography variant="small" color="blue-gray" className="block font-medium">
+                    {title}
+                  </Typography>
+                  <Typography as="span" variant="small" className="text-xs font-medium text-blue-gray-500">
+                    {description}
+                  </Typography>
+                </div>
+              </div>
+            ))}
           </CardBody>
         </Card>
       </div>
+
+      {/* Fan Control Dialog */}
+      <Dialog open={openDialog} handler={() => setOpenDialog(false)}>
+        <DialogHeader>Điều khiển chế độ quay</DialogHeader>
+        <DialogBody divider>
+          <div className="flex items-center justify-between">
+            <Typography>Trạng thái hiện tại:</Typography>
+            <Switch
+              checked={fanMode}
+              onChange={() => setFanMode(!fanMode)}
+              color="green"
+              label={fanMode ? "BẬT" : "TẮT"}
+            />
+          </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="text" color="red" onClick={() => setOpenDialog(false)}>
+            Đóng
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Fan Power Dialog */}
+      <Dialog open={openPowerDialog} handler={() => setOpenPowerDialog(false)}>
+        <DialogHeader>Điều chỉnh công suất quạt</DialogHeader>
+        <DialogBody divider>
+          <Typography variant="small" className="mb-2">
+            Công suất hiện tại: <span className="font-bold">{fanPower}%</span>
+          </Typography>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value={fanPower}
+            onChange={(e) => setFanPower(Number(e.target.value))}
+            className="w-full accent-green-500"
+          />
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="text" color="red" onClick={() => setOpenPowerDialog(false)}>
+            Đóng
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Điều chỉnh bơm nước */}
+      <Dialog open={openPumpDialog} handler={() => setOpenPumpDialog(false)}>
+        <DialogHeader>Điều chỉnh công suất bơm nước</DialogHeader>
+        <DialogBody divider>
+          <Typography variant="small" className="mb-2">
+            Công suất hiện tại: <span className="font-bold">{pumpPower}%</span>
+          </Typography>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value={pumpPower}
+            onChange={(e) => setPumpPower(Number(e.target.value))}
+            className="w-full accent-blue-500"
+          />
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="text" color="red" onClick={() => setOpenPumpDialog(false)}>
+            Đóng
+          </Button>
+        </DialogFooter>
+      </Dialog>
+
+      {/* Điều chỉnh ánh sáng*/}
+      <Dialog open={openLightDialog} handler={() => setOpenLightDialog(false)}>
+        <DialogHeader>Điều chỉnh ánh sáng</DialogHeader>
+        <DialogBody divider className="space-y-6">
+          <div>
+            <Typography variant="small" className="mb-2">
+              Độ sáng hiện tại: <span className="font-bold">{lightLevel}%</span>
+            </Typography>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value={lightLevel}
+              onChange={(e) => setLightLevel(Number(e.target.value))}
+              className="w-full accent-yellow-500"
+            />
+          </div>
+
+          <div>
+            <Typography variant="small" className="mb-2">
+              Màu ánh sáng hiện tại:
+            </Typography>
+            <input
+              type="color"
+              value={lightColor}
+              onChange={(e) => setLightColor(e.target.value)}
+              className="w-16 h-10 border-2 border-gray-300 rounded"
+            />
+          </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button variant="text" color="red" onClick={() => setOpenLightDialog(false)}>
+            Đóng
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
+
   );
 }
 

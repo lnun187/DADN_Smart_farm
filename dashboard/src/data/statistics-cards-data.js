@@ -1,7 +1,10 @@
 import { 
   SunIcon, 
   CloudIcon, 
-  LightBulbIcon 
+  LightBulbIcon,
+  AdjustmentsHorizontalIcon,
+  BoltIcon,
+  ArrowPathIcon
 } from '@heroicons/react/24/outline';  
 
 export const statisticsCardsData = [
@@ -15,22 +18,16 @@ export const statisticsCardsData = [
       value: "+55%",
       label: "than last week",
     },
-    onClick: () => {
-      console.log("Đã nhấn Điều chỉnh nhiệt độ");
-    },
   },
   {
     color: "gray",
     icon: CloudIcon,  
-    title: "Điều chỉnh độ ẩm",
+    title: "Điều chỉnh bơm nước",
     value: "58%",
     footer: {
       color: "text-green-500",
       value: "+3%",
       label: "than last month",
-    },
-    onClick: () => {
-      console.log("Đã nhấn Điều chỉnh độ ẩm");
     },
   },
   {
@@ -43,8 +40,38 @@ export const statisticsCardsData = [
       value: "-2%",
       label: "than yesterday",
     },
-    onClick: () => {
-      console.log("Đã nhấn Điều chỉnh ánh sáng");
+  },
+  {
+    color: "gray",
+    icon: AdjustmentsHorizontalIcon,
+    title: "Tốc độ quạt",
+    value: "1,200 RPM",
+    footer: {
+      color: "text-green-500",
+      value: "+10%",
+      label: "so với hôm qua",
+    },
+  },
+  {
+    color: "gray",
+    icon: BoltIcon,
+    title: "Công suất quạt",
+    value: "45 W",
+    footer: {
+      color: "text-red-500",
+      value: "-5%",
+      label: "so với tuần trước",
+    },
+  },
+  {
+    color: "gray",
+    icon: ArrowPathIcon,
+    title: "Chế độ quay",
+    value: "Tự động",
+    footer: {
+      color: "text-green-500",
+      value: "ON",
+      label: "trạng thái hiện tại",
     },
   },
 ];
