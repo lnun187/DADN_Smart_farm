@@ -50,12 +50,14 @@ export function Home() {
   const [openPumpDialog, setOpenPumpDialog] = useState(false);
   const [pumpPower, setPumpPower] = useState(60); 
   const [lightColor, setLightColor] = useState("#ffffff");
+  const [fanAutoMode, setFanAutoMode] = useState(false);
+  const [pumpAutoMode, setPumpAutoMode] = useState(false);
+
 
 
   const handleCardClick = (title) => {
-    if (title === "Chế độ quay") {
-      setOpenDialog(true);
-    } else if (title === "Công suất quạt") {
+ 
+    if (title === "Công suất quạt") {
       setOpenPowerDialog(true);
     } else if (title === "Điều chỉnh ánh sáng") {
       setOpenLightDialog(true);
@@ -70,9 +72,18 @@ export function Home() {
   
   return (
     <div className="mt-12">
-      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-5">
         {statisticsCardsData.map(({ icon, title, footer, value, ...rest }) => {
-          const dynamicValue = title === "Chế độ quay" ? (fanMode ? "ON" : "OFF") : value;
+          let dynamicValue = value;
+          if (title === "Chế độ quay") {
+            dynamicValue = fanMode ? "ON" : "OFF";
+          } else if (title === "Công suất quạt") {
+            dynamicValue = fanAutoMode ? "Tự động" : `${fanPower}%`;
+          } else if (title === "Điều chỉnh ánh sáng") {
+            dynamicValue = `${lightLevel}%`;
+          } else if (title === "Điều chỉnh bơm nước") {
+           dynamicValue = pumpAutoMode ? "Tự động" : `${pumpPower}%`;
+          }
           return (
             <div key={title} onClick={() => handleCardClick(title)} className="cursor-pointer">
               <StatisticsCard
@@ -148,7 +159,7 @@ export function Home() {
           Khu vực quản lý
         </Typography>
         <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2 xl:grid-cols-4">
-          {projectsData.map(({ img, title, description, tag, route, members, details }) => (
+          {projectsData.map(({ img, title, description, tag, route, members, details, extraImage }) => (
             <Card key={title} color="transparent" shadow={false}>
               <CardHeader floated={false} color="gray" className="mx-0 mt-0 mb-4 h-64 xl:h-40">
                 <img src={img} alt={title} className="h-full w-full object-cover" />
@@ -169,11 +180,11 @@ export function Home() {
                   variant="outlined"
                   size="sm"
                   onClick={() => {
-                    setSelectedProject({ img, title, description, tag, members, details });
+                    setSelectedProject({ img, title, description, tag, members, details, extraImage });
                     setOpen(true);
                   }}
                 >
-                  Hiển thị hình ảnh chi tiết
+                  Chi tiết
                 </Button>
                 <div>
                   {members.map(({ img, name }, key) => (
@@ -203,13 +214,27 @@ export function Home() {
                 {selectedProject.tag}
               </Typography>
               <details className="text-sm text-blue-gray-700">
-                <summary className="cursor-pointer font-medium text-blue-gray-600">Chi tiết mô tả</summary>
+                <summary className="cursor-pointer font-medium text-blue-gray-600">Đặc điểm</summary>
                 <ul className="mt-2 list-disc list-inside">
                   {selectedProject.details?.map((item, index) => (
                     <li key={index} className="text-lg">{item}</li>
                   ))}
                 </ul>
               </details>
+              <details className="text-sm text-blue-gray-700">
+                <summary className="cursor-pointer font-medium text-blue-gray-600">Hình ảnh minh họa</summary>
+                <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {selectedProject.extraImage?.map(({img}, index) => (
+                    <img
+                      key={index}
+                      src={img}
+                      alt={`Extra ${index}`}
+                      className="w-full h-40 object-cover rounded-lg border"
+                    />
+                  ))}
+                </div>
+              </details>
+
               <div className="flex mt-4">
                 {selectedProject.members.map(({ img, name }, key) => (
                   <Tooltip key={name} content={name}>
@@ -234,15 +259,16 @@ export function Home() {
         )}
       </Dialog>
 
-      {/* Orders Overview */}
+      {/* Lịch trình công việc sắp tới */}
       <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
         <Card className="border border-blue-gray-100 shadow-sm">
           <CardHeader floated={false} shadow={false} color="transparent" className="m-0 p-6">
             <Typography variant="h6" color="blue-gray" className="mb-2">
-              Orders Overview
+              Lịch trình công việc sắp tới
             </Typography>
             <Typography variant="small" className="flex items-center gap-1 font-normal text-blue-gray-600">
               <ArrowUpIcon strokeWidth={3} className="h-3.5 w-3.5 text-green-500" />
+              {/* Phân tích số liệu*/}
               <strong>24%</strong> this month
             </Typography>
           </CardHeader>
@@ -272,67 +298,82 @@ export function Home() {
         </Card>
       </div>
 
-      {/* Fan Control Dialog */}
-      <Dialog open={openDialog} handler={() => setOpenDialog(false)}>
-        <DialogHeader>Điều khiển chế độ quay</DialogHeader>
-        <DialogBody divider>
-          <div className="flex items-center justify-between">
-            <Typography>Trạng thái hiện tại:</Typography>
-            <Switch
-              checked={fanMode}
-              onChange={() => setFanMode(!fanMode)}
-              color="green"
-              label={fanMode ? "BẬT" : "TẮT"}
-            />
-          </div>
-        </DialogBody>
-        <DialogFooter>
-          <Button variant="text" color="red" onClick={() => setOpenDialog(false)}>
-            Đóng
-          </Button>
-        </DialogFooter>
-      </Dialog>
+      
 
       {/* Fan Power Dialog */}
       <Dialog open={openPowerDialog} handler={() => setOpenPowerDialog(false)}>
-        <DialogHeader>Điều chỉnh công suất quạt</DialogHeader>
-        <DialogBody divider>
-          <Typography variant="small" className="mb-2">
-            Công suất hiện tại: <span className="font-bold">{fanPower}%</span>
-          </Typography>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={fanPower}
-            onChange={(e) => setFanPower(Number(e.target.value))}
-            className="w-full accent-green-500"
-          />
-        </DialogBody>
-        <DialogFooter>
-          <Button variant="text" color="red" onClick={() => setOpenPowerDialog(false)}>
-            Đóng
-          </Button>
-        </DialogFooter>
-      </Dialog>
+          <DialogHeader>Điều chỉnh công suất quạt</DialogHeader>
+          <DialogBody divider className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Typography variant="small" className="mb-2">
+                Chế độ tự động:
+              </Typography>
+              <Switch
+                checked={fanAutoMode}
+                onChange={() => setFanAutoMode(!fanAutoMode)}
+                color="green"
+                label={fanAutoMode ? "Bật" : "Tắt"}
+              />
+            </div>
+
+            {!fanAutoMode && (
+              <>
+                <Typography variant="small" className="mb-2">
+                  Công suất hiện tại: <span className="font-bold">{fanPower}%</span>
+                </Typography>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value={fanPower}
+                  onChange={(e) => setFanPower(Number(e.target.value))}
+                  className="w-full accent-green-500"
+                />
+              </>
+            )}
+          </DialogBody>
+
+          <DialogFooter>
+            <Button variant="text" color="red" onClick={() => setOpenPowerDialog(false)}>
+              Đóng
+            </Button>
+          </DialogFooter>
+        </Dialog>
+
 
       {/* Điều chỉnh bơm nước */}
       <Dialog open={openPumpDialog} handler={() => setOpenPumpDialog(false)}>
         <DialogHeader>Điều chỉnh công suất bơm nước</DialogHeader>
-        <DialogBody divider>
-          <Typography variant="small" className="mb-2">
-            Công suất hiện tại: <span className="font-bold">{pumpPower}%</span>
-          </Typography>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={pumpPower}
-            onChange={(e) => setPumpPower(Number(e.target.value))}
-            className="w-full accent-blue-500"
-          />
+        <DialogBody divider className="space-y-4">
+          <div className="flex items-center justify-between">
+            <Typography variant="small" className="mb-2">
+              Chế độ tự động:
+            </Typography>
+            <Switch
+              checked={pumpAutoMode}
+              onChange={() => setPumpAutoMode(!pumpAutoMode)}
+              color="blue"
+              label={pumpAutoMode ? "Bật" : "Tắt"}
+            />
+          </div>
+
+          {!pumpAutoMode && (
+            <>
+              <Typography variant="small" className="mb-2">
+                Công suất hiện tại: <span className="font-bold">{pumpPower}%</span>
+              </Typography>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="1"
+                value={pumpPower}
+                onChange={(e) => setPumpPower(Number(e.target.value))}
+                className="w-full accent-blue-500"
+              />
+            </>
+          )}
         </DialogBody>
         <DialogFooter>
           <Button variant="text" color="red" onClick={() => setOpenPumpDialog(false)}>
@@ -341,43 +382,45 @@ export function Home() {
         </DialogFooter>
       </Dialog>
 
+
       {/* Điều chỉnh ánh sáng*/}
       <Dialog open={openLightDialog} handler={() => setOpenLightDialog(false)}>
-        <DialogHeader>Điều chỉnh ánh sáng</DialogHeader>
-        <DialogBody divider className="space-y-6">
-          <div>
-            <Typography variant="small" className="mb-2">
-              Độ sáng hiện tại: <span className="font-bold">{lightLevel}%</span>
-            </Typography>
-            <input
-              type="range"
-              min="0"
-              max="100"
-              step="1"
-              value={lightLevel}
-              onChange={(e) => setLightLevel(Number(e.target.value))}
-              className="w-full accent-yellow-500"
-            />
-          </div>
+      <DialogHeader>Điều chỉnh ánh sáng</DialogHeader>
+      <DialogBody divider className="space-y-6">
+        <div>
+          <Typography variant="small" className="mb-2">
+            Độ sáng hiện tại: <span className="font-bold">{lightLevel}%</span>
+          </Typography>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="1"
+            value={lightLevel}
+            onChange={(e) => setLightLevel(Number(e.target.value))}
+            className="w-full accent-yellow-500"
+          />
+        </div>
 
-          <div>
-            <Typography variant="small" className="mb-2">
-              Màu ánh sáng hiện tại:
-            </Typography>
-            <input
-              type="color"
-              value={lightColor}
-              onChange={(e) => setLightColor(e.target.value)}
-              className="w-16 h-10 border-2 border-gray-300 rounded"
-            />
-          </div>
-        </DialogBody>
-        <DialogFooter>
-          <Button variant="text" color="red" onClick={() => setOpenLightDialog(false)}>
-            Đóng
-          </Button>
-        </DialogFooter>
-      </Dialog>
+        <div>
+          <Typography variant="small" className="mb-2">
+            Màu ánh sáng hiện tại:
+          </Typography>
+          <input
+            type="color"
+            value={lightColor}
+            onChange={(e) => setLightColor(e.target.value)}
+            className="w-16 h-10 border-2 border-gray-300 rounded"
+          />
+        </div>
+      </DialogBody>
+      <DialogFooter>
+        <Button variant="text" color="red" onClick={() => setOpenLightDialog(false)}>
+          Đóng
+        </Button>
+      </DialogFooter>
+    </Dialog>
+
     </div>
 
   );

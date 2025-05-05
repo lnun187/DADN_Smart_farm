@@ -27,14 +27,7 @@ import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import { platformSettingsData, conversationsData } from "@/data";
 
 export function Profile() {
-  const [open, setOpen] = useState(false);
-  const [fanSpeed, setFanSpeed] = useState(50); // hiển thị tốc độ hiện tại
-
-  const handleConfirm = () => {
-    console.log("Tốc độ quạt đã được điều chỉnh:", fanSpeed);
-    setOpen(false);
-  };
-
+  
   return (
     <>
       <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('/img/background-image.png')] bg-cover bg-center">
@@ -108,7 +101,7 @@ export function Profile() {
               </div>
             </div>
             <ProfileInfoCard
-              title="Profile Information"
+              title="Giới thiệu bản thân"
               description="Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
               details={{
                 "first name": "Alec M. Thompson",
@@ -131,7 +124,7 @@ export function Profile() {
             />
             <div>
               <Typography variant="h6" color="blue-gray" className="mb-3">
-                Đồng nghiệp
+                Tin nhắn
               </Typography>
               <ul className="flex flex-col gap-6">
                 {conversationsData.map((props) => (

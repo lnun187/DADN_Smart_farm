@@ -1,7 +1,7 @@
 export const projectsData = [
   {
     img: "/img/vuonhoa1.png",
-    title: "Vườn cây hướng dương",
+    title: "Vườn hoa hướng dương",
     tag: "Khu vực #1",
     description:
       "Là loài thực vật thuộc họ cúc, thân cây cao khoảng 1,5 – 1,7m. Thân cây mọc thẳng, mềm mại, màu xanh nhạt, phủ đầy lông tơ, gây ngứa nếu tiếp xúc với da nhạy cảm.",
@@ -17,6 +17,11 @@ export const projectsData = [
       "Thân cây cao, dễ gãy khi gặp gió lớn",
       "Thường ra hoa vào mùa hè",
     ],
+    extraImage: [
+      { img: "/img/vuon1.1.jpg", },
+      { img: "/img/vuon1.2.jpg", },
+      { img: "/img/vuon1.3.jpg", },
+    ]
   },
   {
     img: "/img/vuoncaycaithao.jpg",
@@ -36,6 +41,12 @@ export const projectsData = [
       "Ưa lạnh, dễ trồng vào mùa đông",
       "Có thể thu hoạch sau 45-60 ngày",
     ],
+    extraImage: [
+      { img: "/img/vuon2.1.jpg", },
+      { img: "/img/vuon2.2.jpg", },
+      { img: "/img/vuon2.3.jpg", },
+      
+    ]
   },
   {
     img: "/img/cay-lan-y.jpg",

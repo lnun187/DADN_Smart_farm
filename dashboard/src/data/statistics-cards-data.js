@@ -11,7 +11,7 @@ export const statisticsCardsData = [
   {
     color: "gray",
     icon: SunIcon,  
-    title: "Điều chỉnh nhiệt độ",
+    title: "Theo dõi nhiệt độ",
     value: "37 độ C",
     footer: {
       color: "text-green-500",
@@ -19,6 +19,17 @@ export const statisticsCardsData = [
       label: "than last week",
     },
   },
+  {
+    color: "gray",
+    icon: AdjustmentsHorizontalIcon,
+    title: "Theo dõi độ ẩm",
+    value: "65%",
+    footer: {
+      color: "text-red-500",
+      value: "+5%",
+      label: "so với hôm qua",
+    },
+  },  
   {
     color: "gray",
     icon: CloudIcon,  
@@ -43,37 +54,16 @@ export const statisticsCardsData = [
   },
   {
     color: "gray",
-    icon: AdjustmentsHorizontalIcon,
-    title: "Tốc độ quạt",
-    value: "1,200 RPM",
-    footer: {
-      color: "text-green-500",
-      value: "+10%",
-      label: "so với hôm qua",
-    },
-  },
-  {
-    color: "gray",
     icon: BoltIcon,
     title: "Công suất quạt",
     value: "45 W",
     footer: {
-      color: "text-red-500",
+      color: "text-green-500",
       value: "-5%",
       label: "so với tuần trước",
     },
   },
-  {
-    color: "gray",
-    icon: ArrowPathIcon,
-    title: "Chế độ quay",
-    value: "Tự động",
-    footer: {
-      color: "text-green-500",
-      value: "ON",
-      label: "trạng thái hiện tại",
-    },
-  },
+  
 ];
 
 export default statisticsCardsData;

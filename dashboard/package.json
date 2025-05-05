@@ -12,6 +12,7 @@
     "@heroicons/react": "^2.2.0",
     "@material-tailwind/react": "2.1.4",
     "apexcharts": "3.44.0",
+    "colornames": "^1.1.1",
     "prop-types": "15.8.1",
     "react": "18.2.0",
     "react-apexcharts": "1.4.1",
