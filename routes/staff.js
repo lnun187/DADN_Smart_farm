@@ -34,7 +34,7 @@ router.put('/watering/request/:id', updateWateringSchedule)
 router.delete('/watering/request/:id', deleteWateringSchedule)
 
 //API endpoint to notification
-// router.get('/notification', getNotification)
+router.get('/notification/:Uid', getStaffNotification)
 // router.put('/notification', getNotification)
 // router.delete('/notification', getNotification)
 

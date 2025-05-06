@@ -9,7 +9,7 @@ const Area = require('../models/Area');
 const Schedule = require('../models/schedule');
 const Watering = require('../models/watering_schedule');
 const { encryptPassword } = require('../utils/cryptoUtils');
-// const Notification = require('../models/Notification');
+const Notification = require('../models/notification');
 const client = require('../mqttClient');
 const { authenticateToken } = require('../middlewares/authenticateToken');
 
@@ -225,8 +225,8 @@ const deleteWateringSchedule = async (req, res) => {
 const getStaffNotification = async (req, res) =>
     {
         try {
-            const { userId } = req.query;
-            const notifications = await Notification.find({ toUser: userId }).populate('fromUser', 'User_Name User_Role').sort({ createdAt: -1 });
+            const { Uid } = req.params;
+            const notifications = await Notification.find({ toUser: Uid }).populate('fromUser', 'Email Role').sort({ createdAt: -1 });
             res.status(200).json(notifications);
         } catch (error) {
             console.error("Error fetching notifications:", error);
