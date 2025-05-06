@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const client = require('./mqttClient');
-
+  
 // Thông tin Adafruit IO
 const ADAFRUIT_USERNAME = 'lnun187';
 const ADAFRUIT_KEY = 'aio_Cmrf05ixax0iXvGTB94gIYd0Z9TP';
