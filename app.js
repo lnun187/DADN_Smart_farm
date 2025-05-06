@@ -29,14 +29,15 @@ mongoose.connect(process.env.MONGODB_URI, {
   .catch(error => console.error('MongoDB connection error:', error));
 
 //Route Setup
+const authRoutes = require("./routes/account");
+app.use("/auth", authRoutes);
+
 const recordRoutes = require('./routes/record');
 app.use('/api/record', recordRoutes);
 
-const adminRoutes = require('./routes/admin');
-app.use('/api/control', adminRoutes);
+const staffRoutes = require('./routes/staff');
+app.use('/api/staff', staffRoutes);
 
-const authRoutes = require("./routes/account");
-app.use("/auth", authRoutes);
 
 // Import các schema
 const Record = require('./models/record');
