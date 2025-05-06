@@ -7,8 +7,8 @@ const LightRecord = require("../models/light_Record");
 const SoilRecord = require("../models/soil_Record");
 const FanRecord = require("../models/fan_Record");
 const LedRecord = require("../models/led_Record");
-const Pump1Record = require("../models/pump1_Record");
-const Pump2Record = require("../models/pump2_Record");
+// const Pump1Record = require("../models/pump1_Record");
+// const Pump2Record = require("../models/pump2_Record");
 
 router.get("/get", async (req, res) => {
     try {

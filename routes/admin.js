@@ -3,26 +3,10 @@ const mqtt = require('mqtt');
 const router = express.Router();
 const FanRecord = require("../models/fan_Record");
 const LedRecord = require("../models/led_Record");
-const Pump1Record = require("../models/pump1_Record");
-const Pump2Record = require("../models/pump2_Record");
+// const Pump1Record = require("../models/pump1_Record");
+// const Pump2Record = require("../models/pump2_Record");
 require('dotenv').config();
-
-// MQTT Configuration
-const ADAFRUIT_USERNAME = 'lnun187';
-const ADAFRUIT_KEY = 'aio_thrZ093ZRs4j8KQgtuUpmOq9pnTD';
-const MQTT_URL = `mqtts://io.adafruit.com`;
-const client = mqtt.connect(MQTT_URL, {
-    username: ADAFRUIT_USERNAME,
-    password: ADAFRUIT_KEY
-});
-
-client.on('connect', () => {
-    console.log('Connected to Adafruit IO MQTT');
-});
-
-client.on('error', (err) => {
-    console.error('MQTT connection error:', err);
-});
+const client = require('../mqttClient');
 
 const FEEDS = {
     fan: "DADN_FAN",

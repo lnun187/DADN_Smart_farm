@@ -2,6 +2,7 @@ const mqtt = require('mqtt');
 const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
+const client = require('./mqttClient');
 
 // Thông tin Adafruit IO
 const ADAFRUIT_USERNAME = 'lnun187';
@@ -45,27 +46,27 @@ const TemperatureRecord = require('./models/temp_Record');
 const LightRecord = require('./models/light_Record');
 const FanRecord = require('./models/fan_Record');
 const LedRecord = require('./models/led_Record');
-const Pump1Record = require('./models/pump1_Record');
-const Pump2Record = require('./models/pump2_Record');
+// const Pump1Record = require('./models/pump1_Record');
+// const Pump2Record = require('./models/pump2_Record');
 
-// Kết nối tới Adafruit IO MQTT
-const client = mqtt.connect(MQTT_URL, {
-    username: ADAFRUIT_USERNAME,
-    password: ADAFRUIT_KEY
-});
+// // Kết nối tới Adafruit IO MQTT
+// const client = mqtt.connect(MQTT_URL, {
+//     username: ADAFRUIT_USERNAME,
+//     password: ADAFRUIT_KEY
+// });
 
-client.on('connect', () => {
-    console.log('Đã kết nối tới Adafruit IO MQTT');
+// client.on('connect', () => {
+//     console.log('Đã kết nối tới Adafruit IO MQTT');
 
-    // Subscribe vào các feed
-    FEED_NAMES.forEach(feed => {
-        const topic = `${ADAFRUIT_USERNAME}/feeds/${feed}`;
-        client.subscribe(topic, (err) => {
-            if (err) console.error(`Lỗi khi subscribe vào ${feed}:`, err);
-            else console.log(`Đã subscribe vào feed: ${feed}`);
-        });
-    });
-});
+//     // Subscribe vào các feed
+//     FEED_NAMES.forEach(feed => {
+//         const topic = `${ADAFRUIT_USERNAME}/feeds/${feed}`;
+//         client.subscribe(topic, (err) => {
+//             if (err) console.error(`Lỗi khi subscribe vào ${feed}:`, err);
+//             else console.log(`Đã subscribe vào feed: ${feed}`);
+//         });
+//     });
+// });
 
 // Xử lý dữ liệu nhận được từ MQTT
 client.on("message", async (topic, message) => {
