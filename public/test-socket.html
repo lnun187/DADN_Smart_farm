@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h3>Socket Test Page</h3>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io("http://localhost:3001");
+        socket.on("connect", () => {
+          console.log("Connected:", socket.id);
+          socket.emit("authenticate", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODFiMDViOGE5NmE0NGFjMTVhYjY1ZWYiLCJFbWFpbCI6ImtoYWkudHJpbmhkaW5oQGhjbXV0LmVkdS52biIsIlJvbGUiOiJNYW5hZ2VyIiwiaWF0IjoxNzQ2NjAxNTIwLCJleHAiOjE3NDY2MDUxMjB9.XhYl8zOgOieDLQYLTWJm2NpftH5iiTxubxJsMdMcHy4");
+        });
+      
+        socket.on("new-schedule", (data) => {
+          console.log("📥 Lịch tưới mới:", data);
+          alert(data.message); // hoặc hiển thị lên UI
+        });
+    </script>
+</body>
+</html>

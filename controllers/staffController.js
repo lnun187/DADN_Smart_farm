@@ -161,6 +161,26 @@ const createWateringSchedule = async (req, res) => {
             W_id,
         });
         await schedule.save();
+
+        const managerSocket = global.connectedUsers[Manager_id];
+        const notificationData = {
+            title : "Lịch tưới nước",
+            fromUser: Staff_id,
+            toUser: Manager_id,
+            type: "note",
+            createdAt: new Date(),
+            isRead: false
+        };
+
+        await Notification.create(notificationData);
+        
+        if (managerSocket) {
+            io.to(managerSocket.socketId).emit("new-schedule", {
+                schedule,
+                message: notificationData
+            });
+        }
+
         res.status(201).json({ message: "Lịch tưới đã được tạo thành công", schedule });
     }
     catch (error) {

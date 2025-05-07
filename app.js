@@ -3,7 +3,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const client = require('./mqttClient');
-  
+const http = require('http')
+const cors = require('cors'); 
+const { Server } = require('socket.io');
+const jwt = require('jsonwebtoken');
+
 // Thông tin Adafruit IO
 const ADAFRUIT_USERNAME = 'lnun187';
 const ADAFRUIT_KEY = 'aio_Cmrf05ixax0iXvGTB94gIYd0Z9TP';
@@ -16,11 +20,54 @@ const MQTT_URL = `mqtts://io.adafruit.com`;
 
 // Setup MongoDB và Express
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
 const PORT = 3001;
             
-// Middleware
 app.use(express.json());
+app.use(cors());
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 
+
+// ID + role của người dùng đang kết nối
+global.connectedUsers = {};
+global.io = io;
+secretKey = process.env.PRIVATE_KEY_PASSPHRASE;
+
+io.on('connection', (socket) => {
+    console.log('Socket connected:', socket.id);
+  
+    // Nhận token từ client để xác thực
+    socket.on('authenticate', (token) => {
+      try {
+        const decoded = jwt.verify(token, secretKey);
+        console.log ('Xác thực token socket thành công:', decoded);
+        const userId = decoded.userId;
+        const role = decoded.Role;
+  
+        // Gắn userId vào socket
+        connectedUsers[userId] = { socketId: socket.id, role };
+        console.log(`User ${userId} (${role}) connected via socket`);
+      } catch (err) {
+        console.log('Xác thực token socket thất bại:', err.message);
+      }
+    });
+  
+    // Xóa khỏi map khi socket disconnect
+    socket.on('disconnect', () => {
+      for (const userId in connectedUsers) {
+        if (connectedUsers[userId].socketId === socket.id) {
+          delete connectedUsers[userId];
+          console.log(`User ${userId} đã ngắt kết nối socket`);
+          break;
+        }
+      }
+    });
+  });
+
+  
 // Kết nối MongoDB
 mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -136,6 +183,6 @@ client.on("message", async (topic, message) => {
 
 
 // Khởi động server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
