@@ -7,11 +7,16 @@ const client = require('./mqttClient');
 // Thông tin Adafruit IO
 const ADAFRUIT_USERNAME = 'lnun187';
 const ADAFRUIT_KEY = 'aio_Cmrf05ixax0iXvGTB94gIYd0Z9TP';
-// const ADAFRUIT_USERNAME = 'ivanru';
-// const ADAFRUIT_KEY = 'aio_PZkk338TJbPRk19F41EFxu84pfCT';
-const FEED_NAMES = ['DADN_DHT20_HUM', 'DADN_DHT20_TEMP', 
-    'DADN_LIGHT_SENSOR', 'DADN_SOIL_MOISTURE', 
-    'DADN_FAN', 'DADN_RGB_LED','DADN_PUMP1', 'DADN_PUMP2'];
+
+const FEED_NAMES = [
+    'DADN_DHT20_HUM', 
+    'DADN_DHT20_TEMP', 
+    'DADN_LIGHT_SENSOR', 
+    'DADN_SOIL_MOISTURE', 
+    'DADN_FAN', 
+    'DADN_RGB_LED',
+    'DADN_PUMP1'
+];
 const MQTT_URL = `mqtts://io.adafruit.com`;
 
 // Setup MongoDB và Express
@@ -38,6 +43,9 @@ app.use('/api/record', recordRoutes);
 const staffRoutes = require('./routes/staff');
 app.use('/api/staff', staffRoutes);
 
+const adminRoutes = require('./routes/admin');
+app.use('/control', adminRoutes);
+
 
 // Import các schema
 const Record = require('./models/record');
@@ -47,8 +55,7 @@ const TemperatureRecord = require('./models/temp_Record');
 const LightRecord = require('./models/light_Record');
 const FanRecord = require('./models/fan_Record');
 const LedRecord = require('./models/led_Record');
-// const Pump1Record = require('./models/pump1_Record');
-// const Pump2Record = require('./models/pump2_Record');
+const PumpRecord = require('./models/pump_Record');
 
 // // Kết nối tới Adafruit IO MQTT
 // const client = mqtt.connect(MQTT_URL, {
@@ -70,69 +77,63 @@ const LedRecord = require('./models/led_Record');
 // });
 
 // Xử lý dữ liệu nhận được từ MQTT
-client.on("message", async (topic, message) => {
-    const feed = topic.split("/").pop();
-    const value = message.toString();
-    const currentTime = new Date().toISOString();
+// client.on("message", async (topic, message) => {
+//     const feed = topic.split("/").pop();
+//     const value = message.toString();
+//     const currentTime = new Date().toISOString();
 
-    console.log(`Nhận dữ liệu từ ${feed}: ${value}`);
+//     console.log(`Nhận dữ liệu từ ${feed}: ${value}`);
 
-    try {
-        // Tạo bản ghi mới cho mỗi dữ liệu nhận được
-        const newRecord = await Record.create({ Time: currentTime });
-        console.log("Đã tạo bản ghi mới trong Record:", newRecord._id);
+//     try {
+//         // Tạo bản ghi mới cho mỗi dữ liệu nhận được
+//         const newRecord = await Record.create({ Time: currentTime });
+//         console.log("Đã tạo bản ghi mới trong Record:", newRecord._id);
 
-        // Lưu dữ liệu vào bảng tương ứng
-        switch (feed) {
-            case "DADN_DHT20_HUM":
-                await HumidityRecord.create({ RC_Id: newRecord._id, Value: value });
-                console.log("Đã lưu dữ liệu độ ẩm vào MongoDB.");
-                break;
+//         // Lưu dữ liệu vào bảng tương ứng
+//         switch (feed) {
+//             case "DADN_DHT20_HUM":
+//                 await HumidityRecord.create({ RC_Id: newRecord._id, Value: value });
+//                 console.log("Đã lưu dữ liệu độ ẩm vào MongoDB.");
+//                 break;
 
-            case "DADN_DHT20_TEMP":
-                await TemperatureRecord.create({ RC_Id: newRecord._id, Value: value });
-                console.log("Đã lưu dữ liệu nhiệt độ vào MongoDB.");
-                break;
+//             case "DADN_DHT20_TEMP":
+//                 await TemperatureRecord.create({ RC_Id: newRecord._id, Value: value });
+//                 console.log("Đã lưu dữ liệu nhiệt độ vào MongoDB.");
+//                 break;
 
-            case "DADN_LIGHT_SENSOR":
-                await LightRecord.create({ RC_Id: newRecord._id, Value: value });
-                console.log("Đã lưu dữ liệu cảm biến ánh sáng vào MongoDB.");
-                break;
+//             case "DADN_LIGHT_SENSOR":
+//                 await LightRecord.create({ RC_Id: newRecord._id, Value: value });
+//                 console.log("Đã lưu dữ liệu cảm biến ánh sáng vào MongoDB.");
+//                 break;
 
-            case "DADN_SOIL_MOISTURE":
-                await SoilRecord.create({ RC_Id: newRecord._id, Value: value });
-                console.log("Đã lưu dữ liệu độ ẩm đất vào MongoDB.");
-                break;
+//             case "DADN_SOIL_MOISTURE":
+//                 await SoilRecord.create({ RC_Id: newRecord._id, Value: value });
+//                 console.log("Đã lưu dữ liệu độ ẩm đất vào MongoDB.");
+//                 break;
 
-            case "DADN_FAN":
-                await FanRecord.create({ RC_Id: newRecord._id, Value: value });
-                console.log("Đã lưu trạng thái quạt vào MongoDB.");
-                break;
+//             case "DADN_FAN":
+//                 await FanRecord.create({ RC_Id: newRecord._id, Value: value });
+//                 console.log("Đã lưu trạng thái quạt vào MongoDB.");
+//                 break;
 
-            case "DADN_RGB_LED":
-                await LedRecord.create({ RC_Id: newRecord._id, Value: value });
-                console.log("Đã lưu trạng thái đèn vào MongoDB.");
-                break;
+//             case "DADN_RGB_LED":
+//                 await LedRecord.create({ RC_Id: newRecord._id, Value: value });
+//                 console.log("Đã lưu trạng thái đèn vào MongoDB.");
+//                 break;
 
-            case "DADN_PUMP1":
-                await Pump1Record.create({ RC_Id: newRecord._id, Value: value });
-                console.log("Đã lưu trạng thái máy bơm nước 1 vào MongoDB.");
-                break;
+//             case "DADN_PUMP1":
+//                 await PumpRecord.create({ RC_Id: newRecord._id, Value: value });
+//                 console.log("Đã lưu trạng thái máy bơm nước 1 vào MongoDB.");
+//                 break;
 
-            case "DADN_PUMP2":
-                await Pump2Record.create({ RC_Id: newRecord._id, Value: value });
-                console.log("Đã lưu trạng thái máy bơm nước 2 vào MongoDB.");
-                break;
-                
-
-            default:
-                console.warn(`Không có schema phù hợp cho feed: ${feed}`);
-                break;
-        }
-    } catch (error) {
-        console.error("Lỗi khi lưu vào MongoDB:", error);
-    }
-});
+//             default:
+//                 console.warn(`Không có schema phù hợp cho feed: ${feed}`);
+//                 break;
+//         }
+//     } catch (error) {
+//         console.error("Lỗi khi lưu vào MongoDB:", error);
+//     }
+// });
 
 
 // Khởi động server
