@@ -8,7 +8,7 @@ import {
   Button,
   // Không cần Select, Option nữa
 } from "@material-tailwind/react";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/solid"; // Đổi lại solid nếu muốn icon đầy
+import { MagnifyingGlassIcon } from "@heroicons/react/24/solid"; 
 
 // Import dữ liệu mẫu
 import { historyLogData } from "@/data/history-log-data.js"; 

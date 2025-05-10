@@ -13,7 +13,7 @@ import {
   Select,
   Option,
   Textarea,
-  IconButton, // Thêm IconButton nếu muốn dùng icon button
+  IconButton, // Thêm IconButton
 } from "@material-tailwind/react";
 import { 
     BellAlertIcon, // Icon cho tab Yêu cầu
@@ -153,7 +153,7 @@ export function AdminNotificationCenter() {
                    <Typography variant="h6" color="white">Soạn Thông báo / Ghi chú</Typography>
                 </CardHeader>
                 <CardBody>
-                   {/* Sử dụng form để bao bọc nếu muốn submit bằng Enter */}
+                   {/* Sử dụng form để bao bọc khi submit bằng Enter */}
                    <form onSubmit={handleSendNote} className="flex flex-col gap-6">
                       <Select 
                          label="Gửi đến" 

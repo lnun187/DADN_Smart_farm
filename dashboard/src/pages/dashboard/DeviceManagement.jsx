@@ -36,7 +36,6 @@ export function DeviceManagement() {
   const [deviceToDelete, setDeviceToDelete] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [deviceToEdit, setDeviceToEdit] = useState(null); 
-  // Bỏ 'location' khỏi đây nếu muốn, nhưng để cũng không ảnh hưởng nhiều ở bước giả lập
   const [editFormData, setEditFormData] = useState({ name: '', type: '', location: '', id: '', status: '' }); 
   const [alertInfo, setAlertInfo] = useState({ open: false, color: 'green', message: '' });
 

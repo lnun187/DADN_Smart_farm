@@ -1,4 +1,4 @@
-import React, { useState } from "react"; // Thêm useState nếu cần tương tác sau này
+import React, { useState } from "react"; 
 import {
   Typography,
   Card,
@@ -58,7 +58,7 @@ export function AdminDashboard() {
    const handleRequestAction = (requestId, action) => {
       console.log(`Dashboard Action: ${action} on Request ID: ${requestId}`);
       setRequests(prevRequests => prevRequests.filter(req => req.id !== requestId));
-      // Có thể thêm Alert ở đây nếu muốn
+     
    };
 
   // === DỮ LIỆU CHO WIDGETS ===

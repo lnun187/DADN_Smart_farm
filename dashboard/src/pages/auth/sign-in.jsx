@@ -1,128 +1,123 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import {
-  Card,
+  Card, // Có thể dùng Card để bọc form cho đẹp hơn
   Input,
   Checkbox,
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { Link, useNavigate } from "react-router-dom"; // Thêm useNavigate
-import { useAuth } from "@/context/AuthContext"; // Import hook useAuth đã tạo
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
 
 export function SignIn() {
-  // --- Thêm State để quản lý input và lỗi ---
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(""); // State cho thông báo lỗi
-
-  // --- Lấy hàm login và navigate ---
+  const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // --- Hàm xử lý khi nhấn nút Sign In ---
   const handleSignIn = (event) => {
-    event.preventDefault(); 
-    setError(""); 
-
-    // Gọi hàm login giả lập từ AuthContext
-    const loginSuccess = login(email, password); 
-
+    event.preventDefault();
+    setError("");
+    const loginSuccess = login(email, password);
     if (loginSuccess) {
-      // Nếu login thành công, chuyển hướng vào dashboard
-      navigate("/dashboard/home"); // Hoặc trang mặc định bạn muốn
+      navigate("/dashboard/home");
     } else {
-      // Nếu login thất bại, hiển thị lỗi
       setError("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
     }
   };
 
   return (
-    <section className="m-8 flex gap-4">
-      <div className="w-full lg:w-3/5 mt-24">
-        <div className="text-center">
-          <Typography variant="h2" className="font-bold mb-4">Sign In</Typography>
-          <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">Enter your email and password to Sign In.</Typography>
-        </div>
-        {/* --- Sử dụng onSubmit cho form --- */}
-        <form className="mt-8 mb-2 mx-auto w-80 max-w-screen-lg lg:w-1/2" onSubmit={handleSignIn}>
-          <div className="mb-1 flex flex-col gap-6">
-            <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
-              Your email
-            </Typography>
-            {/* --- Thêm value và onChange cho Input email --- */}
-            <Input
-              size="lg"
-              placeholder="name@mail.com"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)} 
-            />
-            <Typography variant="small" color="blue-gray" className="-mb-3 font-medium">
-              Password
-            </Typography>
-            {/* --- Thêm value và onChange cho Input password --- */}
-            <Input
-              type="password"
-              size="lg"
-              placeholder="********"
-              className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
-              labelProps={{
-                className: "before:content-none after:content-none",
-              }}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)} 
-            />
-          </div>
-          {/* --- Hiển thị lỗi nếu có --- */}
-          {error && (
-            <Typography variant="small" color="red" className="mt-2 text-center">
-              {error}
-            </Typography>
-          )}
-          <Checkbox
-            label={
-              <Typography
-                variant="small"
-                color="gray"
-                className="flex items-center justify-start font-medium"
-              >
-                I agree the&nbsp;
-                <a
-                  href="#"
-                  className="font-normal text-black transition-colors hover:text-gray-900 underline"
-                >
-                  Terms and Conditions
-                </a>
+    // Section bao ngoài, canh giữa toàn bộ nội dung
+    <section className="min-h-screen flex items-center justify-center bg-gray-100 p-4"> {/* Thêm bg-gray-100 và padding */}
+      <div className="container mx-auto">
+        <Card className="flex-row w-full max-w-4xl mx-auto shadow-2xl rounded-xl overflow-hidden"> {/* Dùng Card bao cả 2 cột */}
+          {/* Cột bên trái chứa form */}
+          <div className="w-full lg:w-3/5 flex flex-col items-center justify-center p-8 md:p-12 animate-fadeInUp"> {/* Canh giữa và thêm animation */}
+            <div className="text-center mb-8">
+              <Typography variant="h2" className="font-bold mb-4 text-gray-800">
+                Đăng Nhập
               </Typography>
-            }
-            containerProps={{ className: "-ml-2.5" }}
-          />
-          {/* --- Thêm type="submit" cho Button Sign In --- */}
-          <Button type="submit" className="mt-6" fullWidth>
-            Sign In
-          </Button>
+              <Typography variant="paragraph" color="blue-gray" className="text-lg font-normal">
+                Nhập email và mật khẩu của bạn để tiếp tục.
+              </Typography>
+            </div>
+            <form className="w-full max-w-sm" onSubmit={handleSignIn}> {/* Bỏ mx-auto, w-80 */}
+              <div className="mb-4 flex flex-col gap-6">
+                <div> {/* Bọc label và input */}
+                  <Typography variant="small" color="blue-gray" className="mb-1 font-medium">
+                    Email của bạn
+                  </Typography>
+                  <Input
+                    size="lg"
+                    type="email" // Thêm type email
+                    placeholder="name@gmail.com"
+                    className="!border-t-blue-gray-200 focus:!border-t-green-500 focus:!border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-300"
+                    labelProps={{ className: "before:content-none after:content-none" }}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+             
+                  />
+                </div>
+                <div> {/* Bọc label và input */}
+                  <Typography variant="small" color="blue-gray" className="mb-1 font-medium">
+                    Mật khẩu
+                  </Typography>
+                  <Input
+                    type="password"
+                    size="lg"
+                    placeholder="********"
+                    className="!border-t-blue-gray-200 focus:!border-t-green-500 focus:!border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-300"
+                    labelProps={{ className: "before:content-none after:content-none" }}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  
+                  />
+                </div>
+              </div>
 
-          <div className="flex items-center justify-between gap-2 mt-6">
-            {/* ... Checkbox Subscribe ... */}
-            {/* ... Link Forgot Password ... */}
+              {error && (
+                <Typography variant="small" color="red" className="mt-2 mb-2 text-center"> {/* Thêm mb-2 */}
+                  {error}
+                </Typography>
+              )}
+
+              <div className="flex items-center justify-between mt-4 mb-2"> {/* Điều chỉnh khoảng cách */}
+                <Checkbox
+                  label={
+                    <Typography variant="small" color="gray" className="flex items-center font-medium">
+                      Remember me 
+                    </Typography>
+                  }
+                  containerProps={{ className: "-ml-2.5" }}
+                />
+                <Typography variant="small" className="font-medium text-green-600 hover:text-green-700 transition-colors">
+                  <Link to="#">Quên mật khẩu?</Link> {/* Link tới trang quên mật khẩu nếu có */}
+                </Typography>
+              </div>
+
+              <Button type="submit" className="mt-6 bg-green-500 hover:bg-green-600 hover:shadow-lg hover:scale-105 transition-all duration-300" fullWidth>
+                Đăng Nhập
+              </Button>
+              
+              <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-6">
+                Chưa có tài khoản?
+                <Link to="/auth/sign-up" className="text-green-600 hover:text-green-700 ml-1 font-semibold transition-colors">
+                  Tạo tài khoản mới
+                </Link>
+              </Typography>
+            </form>
           </div>
-          <div className="space-y-4 mt-8">
-             {/* ... Button Sign in with Google/Twitter ... */}
+
+          {/* Cột bên phải chứa ảnh */}
+          <div className="w-full lg:w-2/5 hidden lg:flex items-center justify-center"> {/* Thêm flex, items-center, justify-center */}
+            <img
+              src="/img/modern1.png" 
+              alt="Greenhouse Theme"
+              className="h-full w-full object-cover" 
+            />
           </div>
-          <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-4">
-            Not registered?
-            <Link to="/auth/sign-up" className="text-gray-900 ml-1">Create account</Link>
-          </Typography>
-        </form>
-      </div>
-      <div className="w-2/5 h-full hidden lg:block">
-        <img
-          src="/img/pattern.png"
-          className="h-full w-full object-cover rounded-3xl"
-        />
+        </Card>
       </div>
     </section>
   );
