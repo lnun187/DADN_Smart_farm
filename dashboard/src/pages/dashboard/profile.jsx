@@ -46,10 +46,10 @@ export function Profile() {
               />
               <div>
                 <Typography variant="h5" color="blue-gray" className="mb-1">
-                  Richard Davis
+                  Nguyễn Hữu Nam
                 </Typography>
                 <Typography variant="small" className="font-normal text-blue-gray-600">
-                  CEO / Co-Founder
+                  Nhân viên khu vực 1
                 </Typography>
               </div>
             </div>
@@ -74,9 +74,7 @@ export function Profile() {
           </div>
           <div className="gird-cols-1 mb-12 grid gap-12 px-4 lg:grid-cols-2 xl:grid-cols-3">
             <div>
-              <Typography variant="h6" color="blue-gray" className="mb-3">
-                Đồng nghiệp
-              </Typography>
+              
               <div className="flex flex-col gap-12">
                 {platformSettingsData.map(({ title, options }) => (
                   <div key={title}>
@@ -102,9 +100,9 @@ export function Profile() {
             </div>
             <ProfileInfoCard
               title="Giới thiệu bản thân"
-              description="Hi, I'm Alec Thompson, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
+              description="Hi, I'm Nam, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
               details={{
-                "first name": "Alec M. Thompson",
+                "first name": "Nguyễn Hữu Nam",
                 mobile: "(44) 123 1234 123",
                 email: "alecthompson@mail.com",
                 location: "USA",
