@@ -10,10 +10,11 @@ import {
   ClockIcon as HistoryIcon,
   BellAlertIcon,
   MapPinIcon,
+  PresentationChartBarIcon,
 } from "@heroicons/react/24/solid"; 
 
 // Staff Pages
-import { Home, Profile, Tables, Notifications } from "@/pages/dashboard";
+import { StaffDashboard, Profile, Tables, Notifications } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 
 
@@ -31,18 +32,19 @@ const icon = {
 };
 
 export const routes = [
+
   {
     layout: "dashboard",
     pages: [
-      // === STAFF Routes === (Ví dụ phân quyền)
+      // === STAFF Routes 
       {
-        icon: <HomeIcon {...icon} />,
-        name: "dashboard", 
-        path: "/home",
-        element: <Home />,
+        icon: <PresentationChartBarIcon {...icon} />, 
+        name: "Dashboard", 
+        path: "/staff-dashboard", 
+        element: <StaffDashboard />,
         roles: ['staff'] 
       },
-      // === COMMON Routes === (Ví dụ phân quyền)
+
       {
         icon: <UserCircleIcon {...icon} />,
         name: "profile",
@@ -60,18 +62,18 @@ export const routes = [
        // === ADMIN Routes === (Ví dụ phân quyền)
       {
         icon: <TableCellsIcon {...icon} />,
-        name: "tables", // Trang Tables mẫu
+        name: "tables", 
         path: "/tables",
         element: <Tables />,
         roles: ['staff'] 
       },
 
       {
-        icon: <UserCircleIcon {...icon} />, // Có thể dùng icon khác nếu muốn
-        name: "Admin Profile", // Tên menu riêng cho admin
-        path: "/admin-profile", // Đường dẫn riêng
+        icon: <UserCircleIcon {...icon} />, 
+        name: "Admin Profile", 
+        path: "/admin-profile", 
         element: <AdminProfile />, 
-        roles: ['admin'] // Chỉ cho admin
+        roles: ['admin'] 
       },
       
       {
@@ -83,13 +85,37 @@ export const routes = [
       },
       // --- ROUTE CHO DEVICE MANAGEMENT ĐƯỢC THÊM VÀO ĐÂY ---
       {
-        icon: <CogIcon {...icon} />, // Sử dụng icon CogIcon (hoặc icon khác)
-        name: "Quản lý thiết bị",   // Tên hiển thị
-        path: "/device-management", // Đường dẫn
-        element: <DeviceManagement />, // Component tương ứng
-        roles: ['admin']             // Phân quyền
+        icon: <CogIcon {...icon} />, 
+        name: "Quản lý thiết bị",   
+        path: "/device-management", 
+        element: <DeviceManagement />, 
+        roles: ['admin']            
       },
-      
+
+      {
+        icon: <HistoryIcon {...icon} />, 
+        name: "Lịch sử Vườn",
+        path: "/history-log", 
+        element: <HistoryLog />, 
+        roles: ['admin'] 
+      },
+
+      {
+        icon: <BellAlertIcon {...icon} />, 
+        name: "Thông báo & Yêu cầu", 
+        path: "/admin-notifications", 
+        element: <AdminNotificationCenter />, 
+        roles: ['admin'] 
+      },
+
+      {
+        icon: <PresentationChartBarIcon {...icon} />, 
+        name: "Dashboard",    
+        path: "/admin-dashboard", 
+        element: <AdminDashboard />, 
+        roles: ['admin'] 
+      },
+
       {
         icon: <MapPinIcon {...icon} />, 
         name: "Quản lý Khu vực",   
@@ -98,32 +124,6 @@ export const routes = [
         roles: ['admin'] 
       },
 
-      {
-        icon: <HistoryIcon {...icon} />, // Sử dụng icon đã import
-        name: "Lịch sử Vườn",
-        path: "/history-log", // Đường dẫn URL
-        element: <HistoryLog />, // Component tương ứng
-        roles: ['admin'] // Chỉ cho Admin xem lịch sử 
-      },
-
-      {
-        icon: <BellAlertIcon {...icon} />, // Hoặc icon bạn chọn
-        name: "Thông báo & Yêu cầu", // Tên menu
-        path: "/admin-notifications", // Đường dẫn URL
-        element: <AdminNotificationCenter />, 
-        roles: ['admin'] 
-      },
-
-      {
-        icon: <HomeIcon {...icon} />, 
-        name: "Admin Dashboard",    
-        path: "/admin-dashboard", // Hoặc "/dashboard" nếu muốn là trang chủ Admin
-        element: <AdminDashboard />, 
-        roles: ['admin'] 
-      },
-
-
-      // --- Thêm các route Admin khác nếu cần ---
 
     ],
   },

@@ -4,6 +4,7 @@ import {
   LightBulbIcon,
   AdjustmentsHorizontalIcon,
   BoltIcon,
+  SparklesIcon,
   ArrowPathIcon
 } from '@heroicons/react/24/outline';  
 
@@ -22,7 +23,7 @@ export const statisticsCardsData = [
   {
     color: "gray",
     icon: AdjustmentsHorizontalIcon,
-    title: "Theo dõi độ ẩm",
+    title: "Theo dõi độ ẩm không khí",
     value: "65%",
     footer: {
       color: "text-red-500",
@@ -45,7 +46,7 @@ export const statisticsCardsData = [
     color: "gray",
     icon: LightBulbIcon,  
     title: "Điều chỉnh ánh sáng",
-    value: "3,461 Lux",
+    value: "50%",
     footer: {
       color: "text-red-500",
       value: "-2%",
@@ -61,6 +62,28 @@ export const statisticsCardsData = [
       color: "text-green-500",
       value: "-5%",
       label: "so với tuần trước",
+    },
+  },
+  {
+    color: "gray",
+    icon: SparklesIcon, 
+    title: "Cảm biến Ánh sáng",
+    value: "12,500 Lux",
+    footer: {
+      color: "text-green-500",
+      value: "+1500 Lux",
+      label: "so với 1h trước",
+    },
+  },
+  {
+    color: "gray",
+    icon: AdjustmentsHorizontalIcon, 
+    title: "Theo dõi Độ ẩm Đất",
+    value: "55%", 
+    footer: {
+      color: "text-blue-500", 
+      value: "Ổn định",
+      label: "trong 24h qua",
     },
   },
   

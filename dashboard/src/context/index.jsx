@@ -1,7 +1,7 @@
-import React from "react";
+import React, { createContext, useContext, useReducer, useMemo } from "react"; // Thêm useContext, useReducer, useMemo nếu chưa có
 import PropTypes from "prop-types";
 
-export const MaterialTailwind = React.createContext(null);
+export const MaterialTailwind = createContext(null);
 MaterialTailwind.displayName = "MaterialTailwindContext";
 
 export function reducer(state, action) {
@@ -24,6 +24,11 @@ export function reducer(state, action) {
     case "OPEN_CONFIGURATOR": {
       return { ...state, openConfigurator: action.value };
     }
+    // --- THÊM CASE MỚI CHO SELECTED_REGION ---
+    case "SET_SELECTED_REGION": {
+      console.log("Context: Setting selectedRegion to", action.value); // Để debug
+      return { ...state, selectedRegion: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -33,15 +38,16 @@ export function reducer(state, action) {
 export function MaterialTailwindControllerProvider({ children }) {
   const initialState = {
     openSidenav: false,
-    sidenavColor: "dark",
-    sidenavType: "white",
+    sidenavColor: "green",      
+    sidenavType: "transparent", 
     transparentNavbar: true,
     fixedNavbar: false,
     openConfigurator: false,
+    selectedRegion: "all", 
   };
 
-  const [controller, dispatch] = React.useReducer(reducer, initialState);
-  const value = React.useMemo(
+  const [controller, dispatch] = useReducer(reducer, initialState);
+  const value = useMemo(
     () => [controller, dispatch],
     [controller, dispatch]
   );
@@ -54,32 +60,27 @@ export function MaterialTailwindControllerProvider({ children }) {
 }
 
 export function useMaterialTailwindController() {
-  const context = React.useContext(MaterialTailwind);
-
+  const context = useContext(MaterialTailwind);
   if (!context) {
     throw new Error(
       "useMaterialTailwindController should be used inside the MaterialTailwindControllerProvider."
     );
   }
-
   return context;
 }
 
-MaterialTailwindControllerProvider.displayName = "/src/context/index.jsx";
+// --- THÊM HÀM ACTION MỚI ĐỂ SET SELECTED_REGION ---
+export const setSelectedRegion = (dispatch, value) => 
+  dispatch({ type: "SET_SELECTED_REGION", value });
+
+export const setOpenSidenav = (dispatch, value) => dispatch({ type: "OPEN_SIDENAV", value });
+export const setSidenavType = (dispatch, value) => dispatch({ type: "SIDENAV_TYPE", value });
+export const setSidenavColor = (dispatch, value) => dispatch({ type: "SIDENAV_COLOR", value });
+export const setTransparentNavbar = (dispatch, value) => dispatch({ type: "TRANSPARENT_NAVBAR", value });
+export const setFixedNavbar = (dispatch, value) => dispatch({ type: "FIXED_NAVBAR", value });
+export const setOpenConfigurator = (dispatch, value) => dispatch({ type: "OPEN_CONFIGURATOR", value });
 
 MaterialTailwindControllerProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
-
-export const setOpenSidenav = (dispatch, value) =>
-  dispatch({ type: "OPEN_SIDENAV", value });
-export const setSidenavType = (dispatch, value) =>
-  dispatch({ type: "SIDENAV_TYPE", value });
-export const setSidenavColor = (dispatch, value) =>
-  dispatch({ type: "SIDENAV_COLOR", value });
-export const setTransparentNavbar = (dispatch, value) =>
-  dispatch({ type: "TRANSPARENT_NAVBAR", value });
-export const setFixedNavbar = (dispatch, value) =>
-  dispatch({ type: "FIXED_NAVBAR", value });
-export const setOpenConfigurator = (dispatch, value) =>
-  dispatch({ type: "OPEN_CONFIGURATOR", value });
+MaterialTailwindControllerProvider.displayName = "/src/context/index.jsx"; // Hoặc tên file đúng của bạn

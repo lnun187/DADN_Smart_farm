@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Thêm useEffect nếu cần cho việc khác, ở đây dùng cho setTimeout
+import React, { useState, useEffect } from "react"; 
 import {
   Card,
   CardBody,
@@ -62,7 +62,7 @@ export function AdminProfile() {
         handleCloseEditDialog();
     } else {
         console.error("User context is not available.");
-        handleCloseEditDialog(); // Vẫn đóng dialog dù có lỗi context
+        handleCloseEditDialog(); 
     }
   };
 
@@ -75,7 +75,7 @@ export function AdminProfile() {
   return (
     <>
       {/* Ảnh bìa */}
-      <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('/img/background-image.png')] bg-cover bg-center">
+      <div className="relative mt-8 h-72 w-full overflow-hidden rounded-xl bg-[url('/img/modern.png')] bg-cover bg-center">
         <div className="absolute inset-0 h-full w-full bg-gray-900/75" />
       </div>
       
@@ -96,13 +96,12 @@ export function AdminProfile() {
            </div>
 
            {/* --- THÔNG BÁO THÀNH CÔNG --- */}
-           {/* Đặt thông báo ở vị trí dễ thấy, ví dụ ngay dưới phần header profile */}
-           <div className="px-4 pb-4 pt-0"> {/* Thêm padding nếu cần */}
+           <div className="px-4 pb-4 pt-0"> 
               <Alert 
                  open={showSuccessAlert} 
                  color="green"
                  icon={<CheckCircleIcon className="mt-px h-6 w-6" />}
-                 onClose={() => setShowSuccessAlert(false)} // Cho phép đóng thủ công
+                 onClose={() => setShowSuccessAlert(false)}
                  animate={{
                    mount: { y: 0 },
                    unmount: { y: -100 }, // Hiệu ứng trượt lên khi ẩn

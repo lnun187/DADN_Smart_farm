@@ -15,7 +15,7 @@ export function Dashboard() {
   const { sidenavType } = controller;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen ">
       <Sidenav
         routes={routes}
         brandImg={

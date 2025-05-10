@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 const AuthContext = createContext(null);
 
 // Định nghĩa các tài khoản giả lập
-const MOCK_USERS = {
+export const MOCK_USERS = {
   "admin@gmail.com": { password: "123", role: "admin", name: "Admin User" },
   "staff@gmail.com": { password: "456", role: "staff", name: "Staff User" },
 };
@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
       setAuthState({
         isAuthenticated: true,
         userRole: matchedUser.role,
-        user: { email: email, name: matchedUser.name }, // Lưu thêm thông tin user
+        user: { email: email, name: matchedUser.name, role: matchedUser.role }, // Lưu thêm thông tin user
       });
       return true; // Đăng nhập thành công
     }

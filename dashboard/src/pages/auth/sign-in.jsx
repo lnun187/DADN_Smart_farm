@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, MOCK_USERS } from "@/context/AuthContext";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
@@ -19,9 +19,26 @@ export function SignIn() {
   const handleSignIn = (event) => {
     event.preventDefault();
     setError("");
-    const loginSuccess = login(email, password);
-    if (loginSuccess) {
-      navigate("/dashboard/home");
+    
+    const loginAttemptSuccess = login(email, password);
+
+    if (loginAttemptSuccess) {
+      const loggedInUser = MOCK_USERS[email]; 
+      
+      if (loggedInUser) {
+        if (loggedInUser.role === 'admin') {
+          console.log("Admin logged in, navigating to Admin Dashboard");
+          navigate("/dashboard/admin-dashboard"); 
+        } else if (loggedInUser.role === 'staff') {
+          console.log("Staff logged in, navigating to Staff Dashboard");
+
+          navigate("/dashboard/staff-dashboard"); 
+        } else {
+          navigate("/dashboard/staff-dashboard"); 
+        }
+      } else {
+        setError("Lỗi không xác định vai trò người dùng.");
+      }
     } else {
       setError("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
     }

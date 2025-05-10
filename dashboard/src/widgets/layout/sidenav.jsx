@@ -20,7 +20,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-gray-800 to-gray-900",
     white: "bg-white shadow-sm",
-    transparent: "bg-transparent",
+    transparent: "bg-gradient-to-t from-green-100 to-emerald-50 shadow-sm",
   };
 
   // Lấy ra các trang thuộc layout 'dashboard'
@@ -28,9 +28,6 @@ export function Sidenav({ brandImg, brandName, routes }) {
 
   // --- LỌC PAGES DỰA TRÊN userRole LẤY TỪ CONTEXT ---
   const filteredPages = dashboardPages.filter(page => 
-      // Chỉ hiển thị nếu:
-      // 1. Trang không yêu cầu vai trò cụ thể (chung)
-      // 2. Hoặc vai trò của người dùng hiện tại được phép truy cập trang này
       isAuthenticated && (!page.roles || page.roles.includes(userRole)) 
   );
 
@@ -99,9 +96,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
              </ul>
          )}
 
-         {/* Phần Auth Pages (Có thể chỉ hiển thị khi chưa đăng nhập) */}
          {!isAuthenticated && authPages.length > 0 && ( 
-           // Hoặc bạn có thể bỏ hẳn phần này nếu không muốn hiển thị link Sign In/Up trên Sidenav
            <div>
              {routes.find(route => route.layout === 'auth')?.title && (
                <li className="mx-3.5 mt-4 mb-2">
