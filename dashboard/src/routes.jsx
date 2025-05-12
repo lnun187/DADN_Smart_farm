@@ -15,7 +15,7 @@ import {
 } from "@heroicons/react/24/solid"; 
 
 // Staff Pages
-import { StaffDashboard, Profile, Tables, Notifications } from "@/pages/dashboard";
+import { StaffDashboard, Profile, Tables, Notifications, SettimeStaff } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 
 
@@ -64,7 +64,7 @@ export const routes = [
         icon: <ClockIcon {...icon} />,
         name: "set time",
         path: "/settime",
-        //element: < />,
+        element: <SettimeStaff />,
         roles: ['staff'] 
       },
        // === ADMIN Routes === 
