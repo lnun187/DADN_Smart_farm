@@ -11,6 +11,7 @@ import {
   BellAlertIcon,
   MapPinIcon,
   PresentationChartBarIcon,
+  ClockIcon,
 } from "@heroicons/react/24/solid"; 
 
 // Staff Pages
@@ -59,7 +60,14 @@ export const routes = [
         element: <Notifications />,
         roles: ['staff'] 
       },
-       // === ADMIN Routes === (Ví dụ phân quyền)
+      {
+        icon: <ClockIcon {...icon} />,
+        name: "set time",
+        path: "/settime",
+        //element: < />,
+        roles: ['staff'] 
+      },
+       // === ADMIN Routes === 
       {
         icon: <TableCellsIcon {...icon} />,
         name: "tables", 

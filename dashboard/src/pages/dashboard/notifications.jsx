@@ -76,22 +76,6 @@ export function Notifications() {
               {message}
             </Alert>
           ))}
-
-          {editMode && (
-            <div className="mt-4 space-y-2">
-              <Typography variant="small" className="text-blue-gray-600">
-                Chỉnh sửa cảnh báo bảo trì (gray):
-              </Typography>
-              <Textarea
-                value={editedMessage}
-                onChange={(e) => setEditedMessage(e.target.value)}
-                rows={3}
-              />
-              <Button color="green" onClick={handleSave}>
-                Lưu thay đổi
-              </Button>
-            </div>
-          )}
         </CardBody>
       </Card>
     </div>
