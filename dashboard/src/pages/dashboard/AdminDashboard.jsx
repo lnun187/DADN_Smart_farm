@@ -23,7 +23,7 @@ import { staffData as allStaffData } from "@/data/staff-management-data.js";
 import { zoneData } from "@/data/zone-management-data.js";
 import { pendingRequestsData as allPendingRequestsDataFromDataFile } from "@/data/admin-requests-data.js";
 import { 
-    statisticsCardsData as allControlDeviceCardsDataGlobal, // Đổi tên để tránh nhầm lẫn với biến cục bộ nếu có
+    statisticsCardsData as allControlDeviceCardsDataGlobal,
     statisticsChartsData as allHumidityCharts,
     statisticsTempData as allTempCharts,
     statisticsLuxData as allLuxCharts 

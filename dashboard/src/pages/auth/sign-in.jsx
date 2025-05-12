@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card, // Có thể dùng Card để bọc form cho đẹp hơn
   Input,
@@ -7,39 +7,60 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth, MOCK_USERS } from "@/context/AuthContext";
+import { useAuth } from "@/context/AuthContext";
 
 export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { login, userRole, isAuthenticated } = useAuth(); 
   const navigate = useNavigate();
 
-  const handleSignIn = (event) => {
+  // const handleSignIn = async (event) => {
+  //   event.preventDefault();
+  //   setError("");
+    
+  //   const loginAttemptSuccess = await login(email, password);
+
+  //   if (loginAttemptSuccess) {
+  //     if (isAuthenticated) {
+  //       if (userRole === 'admin') {
+  //         console.log("Admin logged in, navigating to Admin Dashboard");
+  //         navigate("/dashboard/admin-dashboard"); 
+  //       } else if (userRole === 'staff') {
+  //         console.log("Staff logged in, navigating to Staff Dashboard");
+
+  //         navigate("/dashboard/staff-dashboard"); 
+  //       } else {
+  //         navigate("/dashboard/staff-dashboard"); 
+  //       }
+  //     } else {
+  //       setError("Lỗi không xác định vai trò người dùng.");
+  //     }
+  //   } else {
+  //     setError("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
+  //   }
+  // };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      if (userRole === 'admin') {
+        console.log("Admin logged in, navigating to Admin Dashboard");
+        navigate("/dashboard/admin-dashboard");
+      } else if (userRole === 'staff') {
+        console.log("Staff logged in, navigating to Staff Dashboard");
+        navigate("/dashboard/staff-dashboard");
+      }
+    }
+  }, [isAuthenticated, userRole, navigate]);
+
+  const handleSignIn = async (event) => {
     event.preventDefault();
     setError("");
-    
-    const loginAttemptSuccess = login(email, password);
 
-    if (loginAttemptSuccess) {
-      const loggedInUser = MOCK_USERS[email]; 
-      
-      if (loggedInUser) {
-        if (loggedInUser.role === 'admin') {
-          console.log("Admin logged in, navigating to Admin Dashboard");
-          navigate("/dashboard/admin-dashboard"); 
-        } else if (loggedInUser.role === 'staff') {
-          console.log("Staff logged in, navigating to Staff Dashboard");
+    const loginAttemptSuccess = await login(email, password);  // Chờ kết quả login
 
-          navigate("/dashboard/staff-dashboard"); 
-        } else {
-          navigate("/dashboard/staff-dashboard"); 
-        }
-      } else {
-        setError("Lỗi không xác định vai trò người dùng.");
-      }
-    } else {
+    if (!loginAttemptSuccess) {
       setError("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
     }
   };

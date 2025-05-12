@@ -22,11 +22,42 @@ import {
   Cog6ToothIcon,
   PencilIcon,
 } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProfileInfoCard, MessageCard } from "@/widgets/cards";
 import { platformSettingsData, conversationsData } from "@/data";
 
 export function Profile() {
+
+  const [userInfo, setUserInfo] = useState(null);
+  useEffect(() => {
+    const saved = sessionStorage.getItem("authState");
+    
+    if (saved) {
+      try {
+        const auth = JSON.parse(saved);
+        console.log("User from sessionStorage:", auth.user);
+
+        // Gọi API lấy thêm info từ user._id nếu muốn
+        fetch(`http://localhost:3001/api/staff/information/${auth.user._id}`)
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("Fetched profile:", data);
+            setUserInfo(data);
+          })
+          .catch((err) => console.error("Lỗi khi fetch thông tin:", err));
+      } catch (e) {
+        console.error("Lỗi parse sessionStorage:", e);
+      }
+    }
+  }, []);
+
+  if (!userInfo) {
+    return (
+      <div className="p-6 text-blue-gray-700">
+        <Typography variant="h6">Đang tải thông tin người dùng...</Typography>
+      </div>
+    );
+  }
   
   return (
     <>
@@ -46,10 +77,10 @@ export function Profile() {
               />
               <div>
                 <Typography variant="h5" color="blue-gray" className="mb-1">
-                  Nguyễn Hữu Nam
+                  {userInfo?.Name || "Chưa có tên"}
                 </Typography>
                 <Typography variant="small" className="font-normal text-blue-gray-600">
-                  Nhân viên khu vực 1
+                  {userInfo?.Area || "Chưa có khu vực"}
                 </Typography>
               </div>
             </div>
@@ -98,7 +129,7 @@ export function Profile() {
                 ))}
               </div>
             </div>
-            <ProfileInfoCard
+            {/* <ProfileInfoCard
               title="Giới thiệu bản thân"
               description="Hi, I'm Nam, Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
               details={{
@@ -116,6 +147,30 @@ export function Profile() {
               }}
               action={
                 <Tooltip content="Edit Profile">
+                  <PencilIcon className="h-4 w-4 cursor-pointer text-blue-gray-500" />
+                </Tooltip>
+              }
+            /> */}
+            <ProfileInfoCard
+              title="Giới thiệu bản thân"
+              description={
+                userInfo.Description || "Chào bạn, tôi là nhân viên tại hệ thống SmartFarm."
+              }
+              details={{
+                "Họ và tên": userInfo.Name,
+                "Email": userInfo.Email,
+                "Số điện thoại": userInfo.Phone || "Chưa cập nhật",
+                "Địa điểm": userInfo.Location || "Không rõ",
+                social: (
+                  <div className="flex items-center gap-4">
+                    <i className="fa-brands fa-facebook text-blue-700" />
+                    <i className="fa-brands fa-twitter text-blue-400" />
+                    <i className="fa-brands fa-instagram text-purple-500" />
+                  </div>
+                  ),
+              }}
+              action={
+                <Tooltip content="Chỉnh sửa thông tin">
                   <PencilIcon className="h-4 w-4 cursor-pointer text-blue-gray-500" />
                 </Tooltip>
               }

@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import {
   Typography,
   Alert,
@@ -9,7 +10,6 @@ import {
   Button,
 } from "@material-tailwind/react";
 
-const alerts = ["gray", "green", "orange", "red"];
 
 const initialMessages = {
   gray: "Hệ thống đang bảo trì định kỳ từ 22h đến 4h sáng ngày mai.",
@@ -19,13 +19,47 @@ const initialMessages = {
 };
 
 export function Notifications() {
-  const [showAlerts, setShowAlerts] = React.useState(() =>
-    Object.fromEntries(alerts.map((color) => [color, true]))
-  );
-  const [alertMessages, setAlertMessages] = React.useState(initialMessages);
-  const [editMode, setEditMode] = React.useState(false);
-  const [editedMessage, setEditedMessage] = React.useState(alertMessages.gray);
-  const [newMessage, setNewMessage] = React.useState("");
+
+  // const alerts = ["gray", "green", "orange", "red"];
+  const saved = sessionStorage.getItem("authState");
+  const userId = saved ? JSON.parse(saved).user._id : null;
+  const [alertMessages, setAlertMessages] = useState([]);
+  const [showAlerts, setShowAlerts] = useState({});
+  const [editMode, setEditMode] = useState(false);
+  const [editedMessage, setEditedMessage] = useState("");
+  const [newMessage, setNewMessage] = useState("");
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/api/staff/notification/${userId}`);
+        const data = await res.json();
+        console.log("📥 Notifications nhận được từ API:", data);
+        const messages = [];
+        const visibility = {};
+
+        data.forEach((noti, index) => {
+          const key = `${noti.level}-${index}`;
+          messages.push({ key, message: noti.message, level: noti.level });
+          visibility[key] = true;
+        });
+
+        setAlertMessages(messages);
+        setShowAlerts(visibility);
+      } catch (err) {
+        console.error("Lỗi khi lấy notifications:", err);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  // const [showAlerts, setShowAlerts] = React.useState(() =>
+  //   Object.fromEntries(alerts.map((color) => [color, true]))
+  // );
+  // const [alertMessages, setAlertMessages] = React.useState(initialMessages);
+  // const [editMode, setEditMode] = React.useState(false);
+  // const [editedMessage, setEditedMessage] = React.useState(alertMessages.gray);
+  // const [newMessage, setNewMessage] = React.useState("");
 
   const handleClose = (color) => {
     setShowAlerts((prev) => ({ ...prev, [color]: false }));
@@ -46,9 +80,17 @@ export function Notifications() {
     setNewMessage(""); 
   };
 
-  
-  const sortedAlertMessages = Object.keys(alertMessages)
-    .map((key) => ({ key, message: alertMessages[key] }));
+  const getAlertColor = (level = "") => {
+    if (level === "gray") return "gray";
+    if (level === "green") return "green";
+    if (level === "orange") return "amber";
+    if (level === "red") return "red";
+    if (level.startsWith("note")) return "blue-gray";
+    return "gray";
+  };
+    
+  const sortedAlertMessages = [...alertMessages];
+
 
   return (
     <div className="mx-auto my-20 flex max-w-screen-lg flex-col gap-8">
@@ -68,11 +110,19 @@ export function Notifications() {
         </CardHeader>
 
         <CardBody className="flex flex-col gap-4 p-4">
-          {sortedAlertMessages.map(({ key, message }) => (
+          {sortedAlertMessages.map(({ key, message, level }) => (
+            // <Alert
+            //   key={key}
+            //   open={showAlerts[key]}
+            //   color={key.startsWith('note') ? "red" : "green"}  
+            //   onClose={() => handleClose(key)}
+            // >
+            //   {message}
+            // </Alert>
             <Alert
               key={key}
               open={showAlerts[key]}
-              color={key.startsWith('note') ? "red" : "green"}  
+              color={getAlertColor(level)}
               onClose={() => handleClose(key)}
             >
               {message}
