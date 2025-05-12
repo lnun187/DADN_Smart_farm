@@ -62,9 +62,7 @@ export function Notifications() {
           <Typography variant="h5" color="blue-gray">
             Cảnh báo từ hệ thống
           </Typography>
-          <Button size="sm" variant="outlined" onClick={() => setEditMode(!editMode)}>
-            {editMode ? "Hủy" : "Chỉnh sửa"}
-          </Button>
+          
         </CardHeader>
 
         <CardBody className="flex flex-col gap-4 p-4">
@@ -94,20 +92,6 @@ export function Notifications() {
               </Button>
             </div>
           )}
-
-          <div className="mt-4 space-y-2">
-            <Typography variant="small" className="text-blue-gray-600">
-              Thêm ghi chú mới:
-            </Typography>
-            <Textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              rows={3}
-            />
-            <Button color="blue" onClick={handleAddNote}>
-              Thêm ghi chú
-            </Button>
-          </div>
         </CardBody>
       </Card>
     </div>
