@@ -79,17 +79,6 @@ npm start
 
 ---
 
-## 📂 Cấu trúc thư mục (tham khảo)
-
-```
-HCMUT_SSPS/
-├── client/         # Frontend ReactJS
-├── server/         # Backend NodeJS
-├── README.md
-└── ...
-```
-
----
 
 ## 📬 Liên hệ
 
@@ -97,4 +86,4 @@ Mọi thắc mắc vui lòng liên hệ nhóm phát triển qua email hoặc Git
 
 ---
 
-🛠 Made with passion by Green Farm Team 🌾
+🛠 Made with passion by Team HCMUT 🌾

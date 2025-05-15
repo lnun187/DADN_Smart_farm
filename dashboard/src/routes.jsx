@@ -12,6 +12,7 @@ import {
   MapPinIcon,
   PresentationChartBarIcon,
   ClockIcon,
+  SunIcon,
 } from "@heroicons/react/24/solid"; 
 
 // Staff Pages
@@ -27,6 +28,7 @@ import { AdminNotificationCenter } from "@/pages/dashboard";
 import { AdminProfile } from "@/pages/dashboard";
 import { ZoneManagement } from "@/pages/dashboard";
 import { AdminDashboard } from "@/pages/dashboard";
+import { TreeManagement} from "@/pages/dashboard";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -68,6 +70,13 @@ export const routes = [
         roles: ['staff'] 
       },
        // === ADMIN Routes === 
+      {
+        icon: <PresentationChartBarIcon {...icon} />, 
+        name: "Dashboard",    
+        path: "/admin-dashboard", 
+        element: <AdminDashboard />, 
+        roles: ['admin'] 
+      },
       {
         icon: <TableCellsIcon {...icon} />,
         name: "tables", 
@@ -117,22 +126,19 @@ export const routes = [
       },
 
       {
-        icon: <PresentationChartBarIcon {...icon} />, 
-        name: "Dashboard",    
-        path: "/admin-dashboard", 
-        element: <AdminDashboard />, 
-        roles: ['admin'] 
-      },
-
-      {
         icon: <MapPinIcon {...icon} />, 
         name: "Quản lý Khu vực",   
         path: "/zone-management", 
         element: <ZoneManagement />, 
         roles: ['admin'] 
       },
-
-
+      {
+        icon: <SunIcon  {...icon} />, 
+        name: "Quản lý cây trồng",   
+        path: "/tree-management", 
+        element: <TreeManagement />, 
+        roles: ['admin'] 
+      },
     ],
   },
   {

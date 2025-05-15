@@ -12,3 +12,4 @@ export * from "@/pages/dashboard/AdminNotificationCenter";
 export * from "@/pages/dashboard/AdminProfile";
 export * from "@/pages/dashboard/ZoneManagement";
 export * from "@/pages/dashboard/AdminDashboard";
+export * from "@/pages/dashboard/TreeManagement";
