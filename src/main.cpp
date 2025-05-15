@@ -12,13 +12,7 @@ AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
     AdafruitIO_Feed *pump2_control = io.feed("DADN_PUMP2");
 
 #else
-    AdafruitIO_Feed *humSensor = io.feed("DADN_DHT20_HUM_1");
-    AdafruitIO_Feed *tempSensor = io.feed("DADN_DHT20_TEMP_1");
-    AdafruitIO_Feed *lightSensor = io.feed("DADN_LIGHT_SENSOR_1");
-    AdafruitIO_Feed *soilmoistureSensor = io.feed("DADN_SOIL_MOISTURE_1");
     AdafruitIO_Feed *led = io.feed("DADN_RGB_LED_1");
-    AdafruitIO_Feed *pump1_control = io.feed("DADN_PUMP1_1");   
-    AdafruitIO_Feed *pump2_control = io.feed("DADN_PUMP2_1");
     AdafruitIO_Feed *fan_control = io.feed("DADN_FAN_1");
 
 #endif
