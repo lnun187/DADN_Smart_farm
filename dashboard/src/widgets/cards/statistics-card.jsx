@@ -7,10 +7,10 @@ import {
 } from "@material-tailwind/react";
 import PropTypes from "prop-types";
 
-export function StatisticsCard({ color, icon, title, value, footer, onClick }) {
+export function StatisticsCard({ color, icon, title, value, footer, onClick, className="" }) {
   return (
     <Card
-      className="border border-blue-gray-100 shadow-sm cursor-pointer hover:shadow-md transition"
+      className={`border border-blue-gray-100 shadow-sm cursor-pointer hover:shadow-md transition ${className}`}
       onClick={onClick}
     >
       <CardHeader

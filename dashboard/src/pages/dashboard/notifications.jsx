@@ -20,9 +20,9 @@ const initialMessages = {
 
 export function Notifications() {
 
-  // const alerts = ["gray", "green", "orange", "red"];
-  const saved = sessionStorage.getItem("authState");
-  const userId = saved ? JSON.parse(saved).user._id : null;
+  // const alerts = ["gray", "green", "orange", "red"]; 
+  const saved = localStorage.getItem("authInfo");
+  const userId = saved ? JSON.parse(saved).user.id : null;
   const [alertMessages, setAlertMessages] = useState([]);
   const [showAlerts, setShowAlerts] = useState({});
   const [editMode, setEditMode] = useState(false);
@@ -31,7 +31,7 @@ export function Notifications() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/staff/notification/${userId}`);
+        const res = await fetch(`http://localhost:3001/staff/notification/${userId}`);
         const data = await res.json();
         console.log("📥 Notifications nhận được từ API:", data);
         const messages = [];

@@ -1,203 +1,391 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  Typography, Card, CardHeader, CardBody, IconButton, Tooltip, Button, Chip,
-  Dialog, DialogHeader, DialogBody, DialogFooter, Input, Switch,
+  ThermometerSun,
+  Droplets,
+  Sun,
+  Waves,
+  Fan,
+  Lightbulb,
+  Droplet,
+} from "lucide-react";
+import {
+  Typography,
+  Button,
+  Card,
+  CardBody,
+  Input,
+  Select,
+  Option,
 } from "@material-tailwind/react";
-import { 
-    ClockIcon, UsersIcon, CogIcon, MapIcon, BellAlertIcon,
-    ExclamationTriangleIcon, XMarkIcon, CheckIcon as ApproveIcon,
-
-} from "@heroicons/react/24/solid"; 
-import { useNavigate } from "react-router-dom";
-
-// Import widgets
 import { StatisticsCard } from "@/widgets/cards";
-import { StatisticsChart } from "@/widgets/charts";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// Import context
-import { useMaterialTailwindController } from "@/context";
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from "recharts";
 
-// Import data mẫu
-import { deviceData as allDeviceData } from "@/data/device-management-data.js";
-import { staffData as allStaffData } from "@/data/staff-management-data.js";
-import { zoneData } from "@/data/zone-management-data.js";
-import { pendingRequestsData as allPendingRequestsDataFromDataFile } from "@/data/admin-requests-data.js";
-import { 
-    statisticsCardsData as allControlDeviceCardsDataGlobal,
-    statisticsChartsData as allHumidityCharts,
-    statisticsTempData as allTempCharts,
-    statisticsLuxData as allLuxCharts 
-} from "@/data"; 
+function SingleLineChart({ title, data, color, pointsCount = 7 }) {
+  // Nhãn cho biểu đồ tuần
+  const weekDays = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+  // Nhãn cho biểu đồ tháng (4 tuần)
+  const monthWeeks = ["Tuần 1", "Tuần 2", "Tuần 3", "Tuần 4"];
 
-export function AdminDashboard() {
-  const [controller] = useMaterialTailwindController();
-  const { selectedRegion } = controller; 
-  const navigate = useNavigate();
+  const labels = pointsCount === 7 ? weekDays : monthWeeks;
 
-  const [kpiAdminData, setKpiAdminData] = useState({
-    zoneName: "Tất cả Khu vực", totalDevices: 0, onlineDevices: 0, errorDevicesCount: 0,
-    activeStaff: 0, totalStaff: 0, pendingRequestsCount: 0,
-  });
-  const [currentErrorDevicesList, setCurrentErrorDevicesList] = useState([]);
-  const [currentPendingRequestsList, setCurrentPendingRequestsList] = useState([]);
-  const [environmentChartsToDisplay, setEnvironmentChartsToDisplay] = useState([]);
-  const [currentZoneNameForDisplay, setCurrentZoneNameForDisplay] = useState("Tất cả Khu vực");
-
-  const [openPowerDialog, setOpenPowerDialog] = useState(false); 
-  const [openLightDialog, setOpenLightDialog] = useState(false); 
-  const [openPumpDialog, setOpenPumpDialog] = useState(false);   
-  const [fanAutoMode, setFanAutoMode] = useState(false); 
-  const [fanPower, setFanPower] = useState(50);
-  const [lightLevel, setLightLevel] = useState(70); 
-  const [lightColor, setLightColor] = useState("#ffffff"); 
-  const [pumpAutoMode, setPumpAutoMode] = useState(false); 
-  const [pumpPower, setPumpPower] = useState(60);
-  const [fanMode, setFanMode] = useState(true); 
-
-  // State để quản lý bản sao của allPendingRequestsDataFromDataFile
-  const [internalAllPendingRequests, setInternalAllPendingRequests] = useState([...allPendingRequestsDataFromDataFile]);
-
-  useEffect(() => {
-    let relevantDeviceData = allDeviceData;
-    let relevantStaffData = allStaffData; 
-    let pendingRelevantRequests = internalAllPendingRequests.filter(r => r.status === 'pending');
-    let zoneNameToDisplay = "Tất cả Khu vực";
-    
-    const targetZone = zoneData.find(z => z.id === selectedRegion);
-    if (targetZone) { zoneNameToDisplay = targetZone.name; } 
-    else if (selectedRegion !== "all" && selectedRegion) { zoneNameToDisplay = `Khu vực ID: ${selectedRegion}`; }
-    setCurrentZoneNameForDisplay(zoneNameToDisplay);
-
-    if (selectedRegion && selectedRegion !== "all") {
-      relevantDeviceData = allDeviceData.filter(d => d.zoneId === selectedRegion);
-      relevantStaffData = allStaffData.filter(s => s.zoneId === selectedRegion || !s.zoneId); 
-      pendingRelevantRequests = pendingRelevantRequests.filter(r => r.zoneId === selectedRegion);
-    }
-    
-    setKpiAdminData({
-        zoneName: zoneNameToDisplay,
-        totalDevices: relevantDeviceData.length,
-        onlineDevices: relevantDeviceData.filter(d => d.status?.toLowerCase() === 'online').length,
-        errorDevicesCount: relevantDeviceData.filter(d => d.status?.toLowerCase() === 'error').length,
-        activeStaff: relevantStaffData.filter(s => s.status === 'active').length,
-        totalStaff: relevantStaffData.length,
-        pendingRequestsCount: pendingRelevantRequests.length,
-    });
-
-    setCurrentErrorDevicesList(relevantDeviceData.filter(d => d.status?.toLowerCase() === 'error'));
-    setCurrentPendingRequestsList(pendingRelevantRequests.slice(0, 3)); 
-
-    const combinedCharts = [];
-    const chartTitleSuffix = zoneNameToDisplay === "Tất cả Khu vực" ? "(Tổng hợp)" : `(${zoneNameToDisplay})`;
-    const updateTitles = (charts, suffix) => charts.map(chart => ({ ...chart, title: `${chart.title.replace(/ \([\s\S]*?\)$/g, '')} ${suffix}` }));
-    if (allHumidityCharts) combinedCharts.push(...updateTitles(allHumidityCharts, chartTitleSuffix));
-    if (allTempCharts) combinedCharts.push(...updateTitles(allTempCharts, chartTitleSuffix));
-    if (allLuxCharts) combinedCharts.push(...updateTitles(allLuxCharts, chartTitleSuffix));
-    setEnvironmentChartsToDisplay(combinedCharts);
-
-  }, [selectedRegion, internalAllPendingRequests]); 
-
-
-   const handleRequestAction = (requestId, action) => {
-      setInternalAllPendingRequests(prev => prev.filter(req => req.id !== requestId));
-      // useEffect sẽ tự động cập nhật kpiData và currentPendingRequestsList
-      console.log(`AdminDashboard Action: ${action} on Request ID: ${requestId} - Giả lập đã xử lý và xóa khỏi danh sách gốc.`);
-   };
-
-  const handleControlCardClick = (title) => {
-    console.log(`Control card clicked: ${title} for region: ${currentZoneNameForDisplay}`);
-    if (title === "Công suất Quạt" || title.toLowerCase().includes("quạt")) { setOpenPowerDialog(true); } 
-    else if (title === "Điều chỉnh Ánh sáng" || title.toLowerCase().includes("ánh sáng")) { setOpenLightDialog(true); } 
-    else if (title === "Điều chỉnh Bơm nước" || title.toLowerCase().includes("bơm nước")) { setOpenPumpDialog(true); }
-  };
-
-  const adminKpiCardsToDisplay = [
-      { color: "blue", icon: MapIcon, title: "Đang xem", value: kpiAdminData.zoneName, footer: { label: kpiAdminData.zoneName === "Tất cả Khu vực" ? `Tổng: ${zoneData.length} khu vực` : " " },},
-      { color: "green", icon: CogIcon, title: "Thiết bị Online", value: `${kpiAdminData.onlineDevices} / ${kpiAdminData.totalDevices}`, footer: { label: kpiAdminData.errorDevicesCount > 0 ? `${kpiAdminData.errorDevicesCount} thiết bị lỗi` : "Hoạt động tốt", color: kpiAdminData.errorDevicesCount > 0 ? "text-red-500" : "text-green-500" }, },
-      { color: "orange", icon: UsersIcon, title: "Nhân viên HĐ", value: `${kpiAdminData.activeStaff} / ${kpiAdminData.totalStaff}`, footer: { label: `${kpiAdminData.totalStaff - kpiAdminData.activeStaff} bị khóa` },}, 
-      { color: "red", icon: BellAlertIcon, title: "Yêu cầu duyệt", value: kpiAdminData.pendingRequestsCount, footer: { label: "Cần xử lý" },},
-  ];
-
-  const TABLE_HEAD_ERRORS = ["Tên Thiết bị Lỗi", "ID"]; 
-  const TABLE_HEAD_REQUESTS = ["Loại Yêu cầu", "Người gửi", "Chi tiết", "Hành động"];
+  const chartData = labels.map((label, index) => ({
+    name: label,
+    Giá_trị:
+      data && data.length >= pointsCount && data[index] != null
+        ? parseFloat(data[index].toFixed(2))
+        : null,
+  }));
 
   return (
-    <div className="mt-12">
-      {/* === HÀNG THẺ THỐNG KÊ KPI CỦA ADMIN === */}
-      <Typography variant="h5" color="blue-gray" className="mb-4 ml-1">Tổng quan Hệ thống</Typography>
-      <div className="mb-12 grid gap-y-6 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
-        {adminKpiCardsToDisplay.map(({ icon, title, footer, value, color }) => (
-          <StatisticsCard key={title} color={color} icon={React.createElement(icon, { className: "w-6 h-6 text-white",})} title={<Typography variant="small" color="blue-gray" className="font-medium uppercase">{title}</Typography>} value={<Typography variant="h4" color="blue-gray">{value}</Typography>} footer={footer && (<Typography className="font-normal text-blue-gray-600">{footer.value && <strong className={footer.color || 'text-green-500'}>{footer.value}</strong>}&nbsp;{footer.label}</Typography>)} />
-        ))}
+    <div className="bg-white rounded-2xl shadow p-4 w-full max-w-full h-[300px]">
+      <h3 className="text-lg font-semibold mb-2 text-center">{title}</h3>
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="Giá_trị"
+            stroke={color}
+            connectNulls={false}
+            dot={{ r: 3 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+export function AdminDashboard() {
+  const [areas, setAreas] = useState([]);
+  const [selectedArea, setSelectedArea] = useState("");
+  const [deviceData, setDeviceData] = useState({});
+  const [devices, setDevices] = useState([]);
+  const [controlValues, setControlValues] = useState({});
+  const [staticsData, setStaticsData] = useState(null); // Dữ liệu biểu đồ tuần/tháng
+  const lastToastTimeRef = useRef({});
+
+  useEffect(() => {
+    fetch("http://localhost:3001/control/get/areas")
+      .then((res) => res.json())
+      .then((data) => setAreas(data))
+      .catch((err) => console.error("Lỗi khi lấy khu vực:", err));
+  }, []);
+
+  useEffect(() => {
+    let intervalId;
+
+    const fetchSensorData = () => {
+      if (!selectedArea) return;
+
+      fetch(`http://localhost:3001/record/get/${selectedArea}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setDeviceData(data);
+          checkWarnings(data);
+        })
+        .catch((err) => console.error("Lỗi khi lấy dữ liệu thiết bị:", err));
+
+      fetch(`http://localhost:3001/control/get/devices/${selectedArea}`)
+        .then((res) => res.json())
+        .then((data) => setDevices(data))
+        .catch((err) => console.error("Lỗi khi lấy thiết bị:", err));
+
+      fetch(`http://localhost:3001/record/statics?areaId=${selectedArea}`)
+        .then((res) => res.json())
+        .then((data) => setStaticsData(data))
+        .catch((err) =>
+          console.error("Lỗi khi lấy dữ liệu thống kê biểu đồ:", err)
+        );
+    };
+
+    if (selectedArea) {
+      fetchSensorData();
+      intervalId = setInterval(fetchSensorData, 10000);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [selectedArea]);
+
+  const checkWarnings = (data) => {
+    const warnings = {
+      temperature: data.temperatureWarning,
+      humidity: data.humidityWarning,
+      light: data.lightWarning,
+      soilMoisture: data.soilMoistureWarning,
+    };
+
+    const now = Date.now();
+
+    Object.entries(warnings).forEach(([key, isWarning]) => {
+      if (isWarning) {
+        const lastShown = lastToastTimeRef.current[key] || 0;
+        if (now - lastShown >= 10000) {
+          toast.error(`${key} vượt ngưỡng!`);
+          lastToastTimeRef.current[key] = now;
+        }
+      }
+    });
+  };
+
+  const handleInputChange = (feed, value) => {
+    setControlValues((prevValues) => ({
+      ...prevValues,
+      [feed]: value,
+    }));
+  };
+
+  const handleControl = (feed, value) => {
+    fetch(`http://localhost:3001/staff/controlDevice/${feed}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ value }),
+    })
+      .then((res) => res.json())
+      .then((data) => alert(data.message))
+      .catch((err) => console.error("Lỗi khi gửi lệnh:", err));
+  };
+
+  // Trả về class đỏ nếu warning = true
+  const getCardBgClass = (field) => {
+    return deviceData[`${field}Warning`] ? "bg-red-200" : "bg-white";
+  };
+
+  return (
+    <div className="p-6 space-y-6">
+      <ToastContainer position="top-right" autoClose={5000} />
+
+      <Typography variant="h4" color="blue-gray">
+        Bảng điều khiển Admin
+      </Typography>
+
+      <div className="w-72">
+        <Select
+          label="Chọn khu vực"
+          value={selectedArea}
+          onChange={setSelectedArea}
+          disabled={areas.length === 0}
+        >
+          {areas.map((area) => (
+            <Option key={area._id} value={area._id}>
+              {area.Name} - {area.Address}
+            </Option>
+          ))}
+        </Select>
       </div>
 
-      {/* === HÀNG CÁC THẺ ĐIỀU KHIỂN THIẾT BỊ === */}
-      <Typography variant="h5" color="blue-gray" className="mb-4 ml-1 mt-10">
-        Điều khiển Nhanh Thiết bị {currentZoneNameForDisplay !== "Tất cả Khu vực" ? `(${currentZoneNameForDisplay})` : "(Toàn hệ thống)"}
-      </Typography>
-      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
-        {/* SỬ DỤNG allControlDeviceCardsDataGlobal TRỰC TIẾP */}
-        {allControlDeviceCardsDataGlobal.map(({ icon, title, footer, value: initialValue, ...rest }) => {
-          let dynamicValue = initialValue; 
-          if (title === "Chế độ quay Quạt") { dynamicValue = fanMode ? "ON" : "OFF"; } 
-          else if (title === "Công suất Quạt") { dynamicValue = fanAutoMode ? "Tự động" : `${fanPower}%`; } 
-          else if (title === "Điều chỉnh Ánh sáng") { dynamicValue = `${lightLevel}%`;  } 
-          else if (title === "Điều chỉnh Bơm nước") { dynamicValue = pumpAutoMode ? "Tự động" : `${pumpPower}%`; } 
-          
-          const isClickable = ["Công suất Quạt", "Điều chỉnh Ánh sáng", "Điều chỉnh Bơm nước", "Chế độ quay Quạt"].includes(title);
+      {selectedArea && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <StatisticsCard
+              title="Nhiệt độ"
+              className={getCardBgClass("temperature")}
+              icon={<ThermometerSun className="text-yellow-500 w-6 h-6" />}
+              value={`${deviceData.temperature ?? "-"} °C`}
+            />
+            <StatisticsCard
+              title="Độ ẩm không khí"
+              className={getCardBgClass("humidity")}
+              icon={<Droplets className="text-yellow-500 w-6 h-6" />}
+              value={`${deviceData.humidity ?? "-"} %`}
+            />
+            <StatisticsCard
+              title="Ánh sáng"
+              className={getCardBgClass("light")}
+              icon={<Sun className="text-yellow-500 w-6 h-6" />}
+              value={`${deviceData.light ?? "-"} lux`}
+            />
+            <StatisticsCard
+              title="Độ ẩm đất"
+              className={getCardBgClass("soilMoisture")}
+              icon={<Waves className="text-yellow-500 w-6 h-6" />}
+              value={`${deviceData.soilMoisture ?? "-"} %`}
+            />
+            <StatisticsCard
+              title="Trạng thái quạt"
+              icon={<Fan className="text-yellow-500 w-6 h-6" />}
+              value={deviceData.fanStatus ?? "-"}
+            />
+            <StatisticsCard
+              title="Trạng thái đèn LED"
+              icon={<Lightbulb className="text-yellow-500 w-6 h-6" />}
+              value={deviceData.ledStatus ?? "-"}
+            />
+            <StatisticsCard
+              title="Trạng thái bơm"
+              icon={<Droplet className="text-yellow-500 w-6 h-6" />}
+              value={deviceData.pumpStatus ?? "-"}
+            />
+          </div>
 
-          return (
-            <div key={title} onClick={isClickable ? () => handleControlCardClick(title) : undefined} className={isClickable ? "cursor-pointer" : ""}>
-              <StatisticsCard {...rest} title={title} value={dynamicValue} icon={React.createElement(icon, { className: "w-6 h-6 text-white" })} footer={<Typography className="font-normal text-blue-gray-600">{footer.value && <strong className={footer.color || "text-green-500"}>{footer.value}</strong>}&nbsp;{footer.label}</Typography>}/>
+          {/* Biểu đồ theo tuần */}
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+            {staticsData && (
+              <>
+                <SingleLineChart
+                  title="Nhiệt độ (°C) - Theo tuần"
+                  data={staticsData.temperature.weeklyAvg}
+                  color="#8884d8"
+                  pointsCount={7}
+                />
+                <SingleLineChart
+                  title="Độ ẩm (%) - Theo tuần"
+                  data={staticsData.humidity.weeklyAvg}
+                  color="#82ca9d"
+                  pointsCount={7}
+                />
+                <SingleLineChart
+                  title="Ánh sáng (lux) - Theo tuần"
+                  data={staticsData.light.weeklyAvg}
+                  color="#ffc658"
+                  pointsCount={7}
+                />
+              </>
+            )}
+          </div>
+
+          {/* Biểu đồ theo tháng */}
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+            {staticsData && (
+              <>
+                <SingleLineChart
+                  title="Nhiệt độ (°C) - Theo tháng"
+                  data={staticsData.temperature.monthlyAvg}
+                  color="#8884d8"
+                  pointsCount={4}
+                />
+                <SingleLineChart
+                  title="Độ ẩm (%) - Theo tháng"
+                  data={staticsData.humidity.monthlyAvg}
+                  color="#82ca9d"
+                  pointsCount={4}
+                />
+                <SingleLineChart
+                  title="Ánh sáng (lux) - Theo tháng"
+                  data={staticsData.light.monthlyAvg}
+                  color="#ffc658"
+                  pointsCount={4}
+                />
+              </>
+            )}
+          </div>
+        </>
+      )}
+
+      {selectedArea && devices.length > 0 && (
+        <Card className="mt-6">
+          <CardBody>
+            <Typography variant="h5" color="blue-gray">
+              Điều khiển thiết bị
+            </Typography>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+              {devices.map((device) => {
+                const { Description, Name, _id } = device;
+                let icon, control;
+
+                if (Description.includes("FAN")) {
+                  icon = <Fan className="text-blue-500 w-6 h-6" />;
+                  control = (
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        label="Tốc độ (0 - 250)"
+                        min={0}
+                        max={250}
+                        value={
+                          controlValues[Description] !== undefined
+                            ? controlValues[Description]
+                            : ""
+                        }
+                        onChange={(e) =>
+                          handleInputChange(Description, Number(e.target.value))
+                        }
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          handleControl(Description, controlValues[Description])
+                        }
+                      >
+                        OK
+                      </Button>
+                    </div>
+                  );
+                } else if (Description.includes("RGB_LED")) {
+                  icon = <Lightbulb className="text-yellow-500 w-6 h-6" />;
+                  control = (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="color"
+                        value={controlValues[Description] || "#000000"}
+                        onChange={(e) =>
+                          handleInputChange(Description, e.target.value)
+                        }
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() =>
+                          handleControl(Description, controlValues[Description])
+                        }
+                      >
+                        OK
+                      </Button>
+                    </div>
+                  );
+                } else if (Description.includes("PUMP")) {
+                  icon = <Droplet className="text-cyan-600 w-6 h-6" />;
+                  control = (
+                    <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        onClick={() => handleControl(Description, 1)}
+                      >
+                        Bật
+                      </Button>
+                      <Button
+                        size="sm"
+                        color="red"
+                        onClick={() => handleControl(Description, 0)}
+                      >
+                        Tắt
+                      </Button>
+                    </div>
+                  );
+                } else {
+                  return null;
+                }
+
+                return (
+                  <Card key={_id} className="p-4 shadow-lg border rounded-2xl">
+                    <div className="flex items-center gap-4 mb-3">
+                      {icon}
+                      <Typography variant="h6" color="blue-gray">
+                        {Name}
+                      </Typography>
+                    </div>
+                    {control}
+                  </Card>
+                );
+              })}
             </div>
-          );
-        })}
-      </div>
-
-      {/* === HÀNG BIỂU ĐỒ MÔI TRƯỜNG === */}
-      <Typography variant="h5" color="blue-gray" className="mb-4 ml-1 mt-10">
-        Biểu đồ Xu hướng Môi trường {currentZoneNameForDisplay !== "Tất cả Khu vực" ? `(${currentZoneNameForDisplay})` : ""}
-      </Typography>
-      <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3"> 
-        {environmentChartsToDisplay.map((props, index) => ( 
-          <StatisticsChart key={`${props.title}-${index}-${selectedRegion}`} {...props} footer={<Typography variant="small" className="flex items-center font-normal text-blue-gray-600"><ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />&nbsp;{props.footer || "dữ liệu gần đây"}</Typography>}/>
-        ))}
-      </div>
-
-      {/* === HÀNG BẢNG THIẾT BỊ LỖI VÀ YÊU CẦU CHỜ DUYỆT === */}
-      <div className="mb-4 grid grid-cols-1 gap-y-12 gap-x-6 xl:grid-cols-2">
-        <Card className="border border-blue-gray-100 shadow-sm">
-            <CardHeader variant="gradient" color="red" className="mb-4 p-4"><Typography variant="h6" color="white">Thiết bị đang gặp lỗi ({currentErrorDevicesList.length})</Typography></CardHeader>
-            <CardBody className="overflow-x-auto px-0 pt-0 pb-2 max-h-72"><table className="w-full min-w-[300px] table-auto"><thead><tr>{TABLE_HEAD_ERRORS.map(head => <th key={head} className="border-b border-blue-gray-50 py-3 px-5 text-left"><Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">{head}</Typography></th>)}</tr></thead><tbody>{currentErrorDevicesList.length > 0 ? currentErrorDevicesList.map(({ id, name }, key) => { const className = `py-3 px-5 ${key === currentErrorDevicesList.length - 1 ? "" : "border-b border-blue-gray-50"}`; return ( <tr key={id}><td className={className}><Typography className="text-xs font-semibold text-blue-gray-600">{name}</Typography></td><td className={className}><Typography className="text-xs font-normal text-blue-gray-500">{id}</Typography></td></tr> ); }) : (<tr><td colSpan={TABLE_HEAD_ERRORS.length} className="py-3 px-5 text-center text-blue-gray-500">Không có thiết bị nào đang lỗi {currentZoneNameForDisplay !== "Tất cả Khu vực" ? `trong ${currentZoneNameForDisplay}` : ""}.</td></tr>)}</tbody></table></CardBody></Card>
-        <Card className="border border-blue-gray-100 shadow-sm">
-            <CardHeader variant="gradient" color="orange" className="mb-4 p-4"><Typography variant="h6" color="white">Yêu cầu chờ duyệt ({kpiAdminData.pendingRequestsCount})</Typography></CardHeader>{/* SỬA Ở ĐÂY */}
-            <CardBody className="overflow-x-auto px-0 pt-0 pb-2 max-h-72">
-                <table className="w-full min-w-[440px] table-auto">
-                    <thead><tr>{TABLE_HEAD_REQUESTS.map(head => <th key={head} className="border-b border-blue-gray-50 py-3 px-5 text-left"><Typography variant="small" className="text-[11px] font-bold uppercase text-blue-gray-400">{head}</Typography></th>)}</tr></thead>
-                    <tbody>
-                       {currentPendingRequestsList.length > 0 ? currentPendingRequestsList.map((req, key) => { const className = `py-3 px-5 ${key === currentPendingRequestsList.length - 1 ? "" : "border-b border-blue-gray-50"}`; return ( <tr key={req.id}><td className={className}><Typography className="text-xs font-semibold text-blue-gray-600">{req.type}</Typography></td><td className={className}><Typography className="text-xs font-normal text-blue-gray-500">{req.requesterName || req.requester}</Typography></td><td className={className}><Typography className="text-xs font-normal text-blue-gray-500 max-w-[150px] truncate" title={req.details}>{req.details}</Typography></td><td className={`${className} flex gap-1`}><Tooltip content="Duyệt"><IconButton variant="text" color="green" size="sm" onClick={() => handleRequestAction(req.id, 'approve')}><ApproveIcon className="h-4 w-4"/></IconButton></Tooltip><Tooltip content="Từ chối"><IconButton variant="text" color="red" size="sm" onClick={() => handleRequestAction(req.id, 'reject')}><XMarkIcon className="h-4 w-4"/></IconButton></Tooltip></td></tr> ); }) : (<tr><td colSpan={TABLE_HEAD_REQUESTS.length} className="py-3 px-5 text-center text-blue-gray-500">Không có yêu cầu nào {currentZoneNameForDisplay !== "Tất cả Khu vực" ? `cho ${currentZoneNameForDisplay}` : ""}.</td></tr>)}
-                    </tbody>
-                </table>
-                {/* SỬA ĐIỀU KIỆN VÀ ONCLICK CHO NÚT NÀY */}
-                {(kpiAdminData.pendingRequestsCount > 0 && kpiAdminData.pendingRequestsCount > currentPendingRequestsList.length) && ( 
-                      <div className="p-4 text-center">
-                           <Button 
-                             size="sm" 
-                             variant="text" 
-                             onClick={() => navigate('/dashboard/admin-notifications', { state: { activeTab: 'requests' }})}
-                            >
-                                Xem tất cả ({kpiAdminData.pendingRequestsCount}) yêu cầu
-                            </Button>
-                       </div>
-                  )}
-            </CardBody>
+          </CardBody>
         </Card>
-      </div>
-
-      {/* === DIALOGS ĐIỀU KHIỂN THIẾT BỊ === */}
-      <Dialog open={openPowerDialog} handler={() => setOpenPowerDialog(false)}><DialogHeader>Điều chỉnh công suất quạt {currentZoneNameForDisplay !== "Tất cả Khu vực" ? `(${currentZoneNameForDisplay})` : ""}</DialogHeader><DialogBody divider className="space-y-4"><div className="flex items-center justify-between"><Typography variant="small">Chế độ tự động:</Typography><Switch checked={fanAutoMode} onChange={() => setFanAutoMode(!fanAutoMode)} color="green" label={fanAutoMode ? "Bật" : "Tắt"}/></div>{!fanAutoMode && (<><Typography variant="small">Công suất: <span className="font-bold">{fanPower}%</span></Typography><Input type="range" min="0" max="100" value={fanPower} onChange={(e) => setFanPower(Number(e.target.value))} className="w-full accent-green-500"/></>)}</DialogBody><DialogFooter><Button variant="text" color="red" onClick={() => setOpenPowerDialog(false)}>Đóng</Button></DialogFooter></Dialog>
-      <Dialog open={openPumpDialog} handler={() => setOpenPumpDialog(false)}><DialogHeader>Điều chỉnh công suất bơm nước {currentZoneNameForDisplay !== "Tất cả Khu vực" ? `(${currentZoneNameForDisplay})` : ""}</DialogHeader><DialogBody divider className="space-y-4"><div className="flex items-center justify-between"><Typography variant="small">Chế độ tự động:</Typography><Switch checked={pumpAutoMode} onChange={() => setPumpAutoMode(!pumpAutoMode)} color="blue" label={pumpAutoMode ? "Bật" : "Tắt"}/></div>{!pumpAutoMode && (<><Typography variant="small">Công suất: <span className="font-bold">{pumpPower}%</span></Typography><Input type="range" min="0" max="100" value={pumpPower} onChange={(e) => setPumpPower(Number(e.target.value))} className="w-full accent-blue-500"/></>)}</DialogBody><DialogFooter><Button variant="text" color="red" onClick={() => setOpenPumpDialog(false)}>Đóng</Button></DialogFooter></Dialog>
-      <Dialog open={openLightDialog} handler={() => setOpenLightDialog(false)}><DialogHeader>Điều chỉnh ánh sáng {currentZoneNameForDisplay !== "Tất cả Khu vực" ? `(${currentZoneNameForDisplay})` : ""}</DialogHeader><DialogBody divider className="space-y-6"><div><Typography variant="small">Độ sáng: <span className="font-bold">{lightLevel}%</span></Typography><Input type="range" min="0" max="100" value={lightLevel} onChange={(e) => setLightLevel(Number(e.target.value))} className="w-full accent-yellow-500"/></div><div><Typography variant="small">Màu ánh sáng:</Typography><Input type="color" value={lightColor} onChange={(e) => setLightColor(e.target.value)} className="w-16 h-10 p-0 border-2 border-gray-300 rounded"/></div></DialogBody><DialogFooter><Button variant="text" color="red" onClick={() => setOpenLightDialog(false)}>Đóng</Button></DialogFooter></Dialog>
+      )}
     </div>
   );
 }

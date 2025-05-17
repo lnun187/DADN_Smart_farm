@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
-  Card, // Có thể dùng Card để bọc form cho đẹp hơn
+  Card,
   Input,
   Checkbox,
   Button,
@@ -13,65 +13,32 @@ export function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { login, userRole, isAuthenticated } = useAuth(); 
+  const { login, isAuthenticated, userRole } = useAuth(); 
   const navigate = useNavigate();
 
-  // const handleSignIn = async (event) => {
-  //   event.preventDefault();
-  //   setError("");
-    
-  //   const loginAttemptSuccess = await login(email, password);
-
-  //   if (loginAttemptSuccess) {
-  //     if (isAuthenticated) {
-  //       if (userRole === 'admin') {
-  //         console.log("Admin logged in, navigating to Admin Dashboard");
-  //         navigate("/dashboard/admin-dashboard"); 
-  //       } else if (userRole === 'staff') {
-  //         console.log("Staff logged in, navigating to Staff Dashboard");
-
-  //         navigate("/dashboard/staff-dashboard"); 
-  //       } else {
-  //         navigate("/dashboard/staff-dashboard"); 
-  //       }
-  //     } else {
-  //       setError("Lỗi không xác định vai trò người dùng.");
-  //     }
-  //   } else {
-  //     setError("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
-  //   }
-  // };
+  const handleSignIn = async (event) => {
+    event.preventDefault();
+    setError("");
+    await login(email, password);
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
-      if (userRole === 'admin') {
-        console.log("Admin logged in, navigating to Admin Dashboard");
+      if (userRole === "admin") {
         navigate("/dashboard/admin-dashboard");
-      } else if (userRole === 'staff') {
-        console.log("Staff logged in, navigating to Staff Dashboard");
+      } else if (userRole === "staff") {
+        navigate("/dashboard/staff-dashboard");
+      } else {
         navigate("/dashboard/staff-dashboard");
       }
     }
   }, [isAuthenticated, userRole, navigate]);
 
-  const handleSignIn = async (event) => {
-    event.preventDefault();
-    setError("");
-
-    const loginAttemptSuccess = await login(email, password);  // Chờ kết quả login
-
-    if (!loginAttemptSuccess) {
-      setError("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
-    }
-  };
-
   return (
-    // Section bao ngoài, canh giữa toàn bộ nội dung
-    <section className="min-h-screen flex items-center justify-center bg-gray-100 p-4"> {/* Thêm bg-gray-100 và padding */}
+    <section className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="container mx-auto">
-        <Card className="flex-row w-full max-w-4xl mx-auto shadow-2xl rounded-xl overflow-hidden"> {/* Dùng Card bao cả 2 cột */}
-          {/* Cột bên trái chứa form */}
-          <div className="w-full lg:w-3/5 flex flex-col items-center justify-center p-8 md:p-12 animate-fadeInUp"> {/* Canh giữa và thêm animation */}
+        <Card className="flex-row w-full max-w-4xl mx-auto shadow-2xl rounded-xl overflow-hidden">
+          <div className="w-full lg:w-3/5 flex flex-col items-center justify-center p-8 md:p-12 animate-fadeInUp">
             <div className="text-center mb-8">
               <Typography variant="h2" className="font-bold mb-4 text-gray-800">
                 Đăng Nhập
@@ -80,24 +47,23 @@ export function SignIn() {
                 Nhập email và mật khẩu của bạn để tiếp tục.
               </Typography>
             </div>
-            <form className="w-full max-w-sm" onSubmit={handleSignIn}> {/* Bỏ mx-auto, w-80 */}
+            <form className="w-full max-w-sm" onSubmit={handleSignIn}>
               <div className="mb-4 flex flex-col gap-6">
-                <div> {/* Bọc label và input */}
+                <div>
                   <Typography variant="small" color="blue-gray" className="mb-1 font-medium">
                     Email của bạn
                   </Typography>
                   <Input
                     size="lg"
-                    type="email" // Thêm type email
+                    type="email"
                     placeholder="name@gmail.com"
-                    className="!border-t-blue-gray-200 focus:!border-t-green-500 focus:!border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-300"
+                    className="!border-t-blue-gray-200 focus:!border-green-500 focus:ring-2 focus:ring-green-500/20"
                     labelProps={{ className: "before:content-none after:content-none" }}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-             
                   />
                 </div>
-                <div> {/* Bọc label và input */}
+                <div>
                   <Typography variant="small" color="blue-gray" className="mb-1 font-medium">
                     Mật khẩu
                   </Typography>
@@ -105,54 +71,52 @@ export function SignIn() {
                     type="password"
                     size="lg"
                     placeholder="********"
-                    className="!border-t-blue-gray-200 focus:!border-t-green-500 focus:!border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-300"
+                    className="!border-t-blue-gray-200 focus:!border-green-500 focus:ring-2 focus:ring-green-500/20"
                     labelProps={{ className: "before:content-none after:content-none" }}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                  
                   />
                 </div>
               </div>
 
               {error && (
-                <Typography variant="small" color="red" className="mt-2 mb-2 text-center"> {/* Thêm mb-2 */}
+                <Typography variant="small" color="red" className="mt-2 mb-2 text-center">
                   {error}
                 </Typography>
               )}
 
-              <div className="flex items-center justify-between mt-4 mb-2"> {/* Điều chỉnh khoảng cách */}
+              <div className="flex items-center justify-between mt-4 mb-2">
                 <Checkbox
                   label={
                     <Typography variant="small" color="gray" className="flex items-center font-medium">
-                      Remember me 
+                      Remember me
                     </Typography>
                   }
                   containerProps={{ className: "-ml-2.5" }}
                 />
-                <Typography variant="small" className="font-medium text-green-600 hover:text-green-700 transition-colors">
-                  <Link to="#">Quên mật khẩu?</Link> {/* Link tới trang quên mật khẩu nếu có */}
+                <Typography variant="small" className="font-medium text-green-600 hover:text-green-700">
+                  <Link to="#">Quên mật khẩu?</Link>
                 </Typography>
               </div>
 
-              <Button type="submit" className="mt-6 bg-green-500 hover:bg-green-600 hover:shadow-lg hover:scale-105 transition-all duration-300" fullWidth>
+              <Button type="submit" className="mt-6 bg-green-500 hover:bg-green-600" fullWidth>
                 Đăng Nhập
               </Button>
-              
+
               <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-6">
                 Chưa có tài khoản?
-                <Link to="/auth/sign-up" className="text-green-600 hover:text-green-700 ml-1 font-semibold transition-colors">
+                <Link to="/auth/sign-up" className="text-green-600 hover:text-green-700 ml-1 font-semibold">
                   Tạo tài khoản mới
                 </Link>
               </Typography>
             </form>
           </div>
 
-          {/* Cột bên phải chứa ảnh */}
-          <div className="w-full lg:w-2/5 hidden lg:flex items-center justify-center"> {/* Thêm flex, items-center, justify-center */}
+          <div className="w-full lg:w-2/5 hidden lg:flex items-center justify-center">
             <img
-              src="/img/modern1.png" 
+              src="/img/modern1.png"
               alt="Greenhouse Theme"
-              className="h-full w-full object-cover" 
+              className="h-full w-full object-cover"
             />
           </div>
         </Card>

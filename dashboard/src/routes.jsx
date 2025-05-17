@@ -11,10 +11,12 @@ import {
   BellAlertIcon,
   MapPinIcon,
   PresentationChartBarIcon,
+  ClockIcon,
+  SunIcon,
 } from "@heroicons/react/24/solid"; 
 
 // Staff Pages
-import { StaffDashboard, Profile, Tables, Notifications } from "@/pages/dashboard";
+import { StaffDashboard, Profile, Tables, Notifications, SettimeStaff } from "@/pages/dashboard";
 import { SignIn, SignUp } from "@/pages/auth";
 
 
@@ -26,6 +28,7 @@ import { AdminNotificationCenter } from "@/pages/dashboard";
 import { AdminProfile } from "@/pages/dashboard";
 import { ZoneManagement } from "@/pages/dashboard";
 import { AdminDashboard } from "@/pages/dashboard";
+import { TreeManagement} from "@/pages/dashboard";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -59,14 +62,22 @@ export const routes = [
         element: <Notifications />,
         roles: ['staff'] 
       },
-       // === ADMIN Routes === (Ví dụ phân quyền)
       {
-        icon: <TableCellsIcon {...icon} />,
-        name: "tables", 
-        path: "/tables",
-        element: <Tables />,
+        icon: <ClockIcon {...icon} />,
+        name: "set time",
+        path: "/settime",
+        element: <SettimeStaff />,
         roles: ['staff'] 
       },
+       // === ADMIN Routes === 
+      {
+        icon: <PresentationChartBarIcon {...icon} />, 
+        name: "Dashboard",    
+        path: "/admin-dashboard", 
+        element: <AdminDashboard />, 
+        roles: ['admin'] 
+      },
+
 
       {
         icon: <UserCircleIcon {...icon} />, 
@@ -109,22 +120,19 @@ export const routes = [
       },
 
       {
-        icon: <PresentationChartBarIcon {...icon} />, 
-        name: "Dashboard",    
-        path: "/admin-dashboard", 
-        element: <AdminDashboard />, 
-        roles: ['admin'] 
-      },
-
-      {
         icon: <MapPinIcon {...icon} />, 
         name: "Quản lý Khu vực",   
         path: "/zone-management", 
         element: <ZoneManagement />, 
         roles: ['admin'] 
       },
-
-
+      {
+        icon: <SunIcon  {...icon} />, 
+        name: "Quản lý cây trồng",   
+        path: "/tree-management", 
+        element: <TreeManagement />, 
+        roles: ['admin'] 
+      },
     ],
   },
   {

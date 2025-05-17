@@ -1,48 +1,32 @@
-// src/context/AuthContext.jsx
-import React, { createContext, useState, useContext, useMemo, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect } from "react";
 import PropTypes from "prop-types";
 
 // 1. Tạo Context
 const AuthContext = createContext(null);
 
-// Định nghĩa các tài khoản giả lập
-// export const MOCK_USERS = {
-//   "admin@gmail.com": { password: "123", role: "admin", name: "Admin User" },
-//   "staff@gmail.com": { password: "456", role: "staff", name: "Staff User" },
-// };
+// 2. Định nghĩa key cho localStorage
+const LOCAL_STORAGE_KEY = "authInfo";
 
-// 2. Tạo Provider Component
+// 3. Tạo Provider Component
 export function AuthProvider({ children }) {
-  const [authState, setAuthState] = useState({
-    isAuthenticated: false,
-    userRole: null,
-    user: null,
-  });
+  const storedAuthInfo = localStorage.getItem(LOCAL_STORAGE_KEY);
+  const initialAuthState = storedAuthInfo
+    ? JSON.parse(storedAuthInfo)
+    : {
+        isAuthenticated: false,
+        userRole: null,
+        user: null,
+      };
+
+  const [authState, setAuthState] = useState(initialAuthState);
 
   useEffect(() => {
-    const savedAuthState = sessionStorage.getItem("authState");
-    if (savedAuthState) {
-      setAuthState(JSON.parse(savedAuthState));
-    }
-  }, []);
-  
-  // Hàm xử lý đăng nhập giả lập
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(authState));
+  }, [authState]);
+
   const login = async (email, password) => {
-    // const matchedUser = MOCK_USERS[email];
-    // if (matchedUser && matchedUser.password === password) {
-    //   console.log("Mock login successful for role:", matchedUser.role);
-    //   setAuthState({
-    //     isAuthenticated: true,
-    //     userRole: matchedUser.role,
-    //     user: { email: email, name: matchedUser.name, role: matchedUser.role }, // Lưu thêm thông tin user
-    //   });
-    //   return true; // Đăng nhập thành công
-    // }
-    // console.log("Mock login failed");
-    // return false; // Đăng nhập thất bại
     try {
-      // Gọi API thực tế để đăng nhập
-      const response = await fetch("http://localhost:3001/auth/login", {
+      const response = await fetch("http://localhost:3001/control/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,33 +34,35 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ Email: email, Password: password }),
       });
 
+      if (!response.ok) {
+        console.log("Login failed with status:", response.status);
+        return false;
+      }
+
       const data = await response.json();
+      console.log("Login successful:", data);
 
-      // setAuthState(prevState => ({
-      //   ...prevState,
-      //   isAuthenticated: true,
-      //   userRole: data.user.Role === "Manager" ? "admin" : "staff",
-      //   user: data.user,
-      // }));
+      const role = data?.user?.Role || data?.user?.Use_Role || "staff";
 
-      const updatedAuthState = {
+      setAuthState({
         isAuthenticated: true,
-        userRole: data.user.Role === "Manager" ? "admin" : "staff",
-        user: data.user,
-      };
-      // Lưu trạng thái vào sessionStorage
-      sessionStorage.setItem("authState", JSON.stringify(updatedAuthState));
-
-      setAuthState(updatedAuthState);
+        userRole: role,
+        user: {
+          id: data.user._id,
+          email: data.user.Email,
+          name: data.user.Name,
+          phone: data.user.Phone,
+          role: role,
+        },
+      });
 
       return true;
-    }catch (error) {
-      console.error("Error during login:", error);
+    } catch (error) {
+      console.error("Login error:", error);
       return false;
     }
   };
 
-  // Hàm xử lý đăng xuất
   const logout = () => {
     console.log("Logging out");
     setAuthState({
@@ -84,23 +70,19 @@ export function AuthProvider({ children }) {
       userRole: null,
       user: null,
     });
-
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
   };
 
-
-  const value = useMemo(
-    () => ({
-      ...authState, // Truyền isAuthenticated, userRole, user
-      login,
-      logout,
-    }),
-    [authState] // Chỉ tạo lại value khi authState thay đổi
-  );
+  const value = {
+    ...authState,
+    login,
+    logout,
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// 3. Tạo custom hook cho dễ dàng sử dụng Context
+// 3. Custom hook để sử dụng AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === null) {
@@ -109,9 +91,8 @@ export const useAuth = () => {
   return context;
 };
 
-// PropTypes cho Provider
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-export default AuthContext; // Export context nếu cần dùng trực tiếp ở đâu đó
+export default AuthContext;

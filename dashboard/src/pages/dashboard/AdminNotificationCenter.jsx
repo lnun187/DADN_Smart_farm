@@ -13,8 +13,12 @@ import { useMaterialTailwindController } from "@/context";
 
 import { pendingRequestsData as allPendingRequestsData, staffListForNotifications as allStaffForNotifications } from "@/data/admin-requests-data.js"; 
 import { zoneData } from "@/data/zone-management-data.js"; 
+import axios from "axios";
 
 export function AdminNotificationCenter() {
+  const auth = JSON.parse(localStorage.getItem("authInfo"));
+  const [requests, setRequests] = useState([]);
+  const [staffList, setStaffList] = useState([]);
   // === LẤY selectedRegion TỪ CONTEXT ===
   const [controller] = useMaterialTailwindController();
   const { selectedRegion } = controller;
@@ -27,22 +31,45 @@ export function AdminNotificationCenter() {
   // === LỌC DANH SÁCH NHÂN VIÊN CHO DROPDOWN GỬI NOTE ===
   const filteredStaffListForNotifications = useMemo(() => {
     if (!selectedRegion || selectedRegion === "all") {
-      return allStaffForNotifications; 
+      return staffList; 
     }
 
-    const staffInZone = allStaffForNotifications.filter(
-      staff => staff.value === "all" || staff.zoneId === selectedRegion
-    );
-
-    return staffInZone;
-  }, [selectedRegion, allStaffForNotifications]);
+    return staffList.filter(staff => staff.zoneId === selectedRegion);
+  }, [selectedRegion, staffList]);
 
   // Reset recipient nếu nó không còn trong danh sách mới
   useEffect(() => {
-      if (!filteredStaffListForNotifications.find(staff => staff.value === recipient)) {
+      if (!filteredStaffListForNotifications.find(staff => staff._id === recipient)) {
           setRecipient("all"); 
       }
   }, [filteredStaffListForNotifications, recipient]);
+
+  useEffect(() => {
+    const fetchStaffList = async () => {
+      try {
+        const resp = await axios.get(`http://localhost:3001/staff/list/${auth.user.id}`);
+        setStaffList(resp.data); 
+      } catch (err) {
+        console.error("Lỗi khi lấy staff list:", err);
+      }
+  };
+  fetchStaffList();
+}, []);
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3001/staff/requests/${auth.user.id}`);
+        // Giả sử API trả về mảng các request
+        console.log (response.data);
+        setRequests(response.data);
+      } catch (error) {
+        console.error("Lỗi khi tải request:", error);
+      }
+    };
+
+    fetchRequests();
+  }, [auth.user.id]);
 
 
   // === useEffect ĐỂ LỌC YÊU CẦU KHI selectedRegion THAY ĐỔI ===
@@ -55,8 +82,47 @@ export function AdminNotificationCenter() {
   }, [selectedRegion]); 
 
   // === HÀM XỬ LÝ ===
-    const handleRequestAction = (requestId, action) => { console.log(`Action: ${action} on Request ID: ${requestId}`); const originalRequestIndex = allPendingRequestsData.findIndex(req => req.id === requestId); if (originalRequestIndex !== -1) { allPendingRequestsData.splice(originalRequestIndex, 1); } setDisplayedRequests(prevRequests => prevRequests.filter(req => req.id !== requestId));};
-    const handleSendNote = (e) => { e.preventDefault(); console.log(`Gửi note đến: ${recipient}, Nội dung: "${noteMessage}"`); setRecipient("all"); setNoteMessage(""); alert("Đã gửi thông báo/note! (Giả lập)"); };
+    const handleRequestAction = async (wateringId, schedule_Id, action) => { 
+      const status = action === 'approve' ? 'approved' : 'rejected';
+      try {
+        // 1. Gửi lên server để cập nhật Status
+        await axios.patch(
+          `http://localhost:3001/staff/watering/request/${wateringId}`,
+          { status }
+        );
+        
+        // 2. Cập nhật UI: loại bỏ request vừa xử lý
+        setRequests(prev => prev.filter(r => r.wateringId !== wateringId));
+    
+        // (Tuỳ chọn) Hiển thị thông báo thành công
+        alert(`Đã ${action === 'approve' ? 'duyệt' : 'từ chối'} thành công.`);
+      } catch (error) {
+        console.error("Lỗi khi cập nhật trạng thái:", error);
+        alert("Không thể cập nhật trạng thái, vui lòng thử lại.");
+      }
+    };
+
+    const handleSendNote = async (e) => { 
+      e.preventDefault(); 
+      try {
+         // 1. Gọi API để tạo thông báo/note
+        await axios.post(
+          `http://localhost:3001/staff/notification/${auth.user.id}`, 
+          {
+            toUser: recipient,
+            message: noteMessage
+          }
+        );
+  
+        // 2. Thành công, reset form và báo cho user
+        setRecipient("all");
+        setNoteMessage("");
+        alert("Đã gửi thông báo thành công!");
+      } catch (error) {
+       console.error("Lỗi khi gửi thông báo:", error);
+         alert("Gửi thông báo thất bại, vui lòng thử lại.");
+       }
+    };
 
 
   // --- Dữ liệu cấu hình cho Tabs --- 
@@ -77,8 +143,81 @@ export function AdminNotificationCenter() {
         </TabsHeader>
         <TabsBody>
           {/* === Tab Panel: Yêu cầu cần duyệt (SỬ DỤNG displayedRequests) === */}
+          {/* <TabPanel key="requests" value="requests">
+             <Card>
+              <CardBody>
+                <Typography variant="h6" color="blue-gray" className="mb-4">
+                  Danh sách Yêu cầu {selectedRegion && selectedRegion !== "all" ? `(${zoneData.find(z => z.id === selectedRegion)?.name || selectedRegion})` : ""} ({displayedRequests.length})
+                </Typography>
+                {displayedRequests.length > 0 ? (
+                  <div className="space-y-4">
+                    {displayedRequests.map((req) => (
+                      <Card key={req.id} shadow={false} className="border border-blue-gray-100 p-4">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <div className="flex-1">
+                          <Typography variant="small" color="blue-gray" className="font-semibold">
+                            [{req.type}] - Từ: {req.requesterName || req.requester}{(selectedRegion === "all" || !selectedRegion) && req.zoneId && (
+                              <span className="text-xs text-gray-600 ml-2">(KV: {zoneData.find(z => z.id === req.zoneId)?.name || req.zoneId})
+                              </span>)}
+                          </Typography>
+                            <Typography variant="small" color="blue-gray" className="font-normal mt-1">
+                              {req.details}
+                            </Typography>
+                            <Typography variant="small" color="gray" className="font-normal text-xs mt-1">
+                              {new Date(req.timestamp).toLocaleString('vi-VN')}
+                            </Typography>
+                          </div>
+                          
+                          <div className="flex gap-2 mt-2 md:mt-0">
+                            <Button size="sm" color="green" variant="gradient" className="flex items-center gap-1" onClick={() => handleRequestAction(req.id, 'approve')}>
+                              <CheckIcon strokeWidth={3} className="h-3.5 w-3.5"/>
+                               Duyệt
+                            </Button>
+                            <Button size="sm" color="red" variant="gradient" className="flex items-center gap-1" onClick={() => handleRequestAction(req.id, 'reject')}>
+                              <XMarkIcon strokeWidth={3} className="h-3.5 w-3.5"/> Từ chối
+                            </Button>
+                            </div>
+                        </div>
+                      </Card>))}
+                    </div>) : (<Typography color="blue-gray" className="text-center">Không có yêu cầu nào {selectedRegion && selectedRegion !== "all" ? `cho ${zoneData.find(z => z.id === selectedRegion)?.name || 'khu vực này'}` : ""}.</Typography>)}</CardBody></Card>
+          </TabPanel> */}
+
           <TabPanel key="requests" value="requests">
-             <Card><CardBody><Typography variant="h6" color="blue-gray" className="mb-4">Danh sách Yêu cầu {selectedRegion && selectedRegion !== "all" ? `(${zoneData.find(z => z.id === selectedRegion)?.name || selectedRegion})` : ""} ({displayedRequests.length})</Typography>{displayedRequests.length > 0 ? (<div className="space-y-4">{displayedRequests.map((req) => (<Card key={req.id} shadow={false} className="border border-blue-gray-100 p-4"><div className="flex flex-col md:flex-row md:items-center justify-between gap-2"><div className="flex-1"><Typography variant="small" color="blue-gray" className="font-semibold">[{req.type}] - Từ: {req.requesterName || req.requester}{(selectedRegion === "all" || !selectedRegion) && req.zoneId && (<span className="text-xs text-gray-600 ml-2">(KV: {zoneData.find(z => z.id === req.zoneId)?.name || req.zoneId})</span>)}</Typography><Typography variant="small" color="blue-gray" className="font-normal mt-1">{req.details}</Typography><Typography variant="small" color="gray" className="font-normal text-xs mt-1">{new Date(req.timestamp).toLocaleString('vi-VN')}</Typography></div><div className="flex gap-2 mt-2 md:mt-0"><Button size="sm" color="green" variant="gradient" className="flex items-center gap-1" onClick={() => handleRequestAction(req.id, 'approve')}><CheckIcon strokeWidth={3} className="h-3.5 w-3.5"/> Duyệt</Button><Button size="sm" color="red" variant="gradient" className="flex items-center gap-1" onClick={() => handleRequestAction(req.id, 'reject')}><XMarkIcon strokeWidth={3} className="h-3.5 w-3.5"/> Từ chối</Button></div></div></Card>))}</div>) : (<Typography color="blue-gray" className="text-center">Không có yêu cầu nào {selectedRegion && selectedRegion !== "all" ? `cho ${zoneData.find(z => z.id === selectedRegion)?.name || 'khu vực này'}` : ""}.</Typography>)}</CardBody></Card>
+            <Card>
+            <CardBody>
+              <Typography variant="h6" color="blue-gray" className="mb-4">
+                Danh sách Yêu cầu ({requests.length})
+              </Typography>
+              {requests.length > 0 ? (
+                <div className="space-y-4">
+                  {requests.map((req) => (
+                    <Card key={req.id} shadow={false} className="border border-blue-gray-100 p-4">
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
+                      <div className="flex-1">
+                        <Typography variant="small" color="blue-gray" className="font-semibold">
+                          [{req.title}] - Từ: {req.staffName || "Ẩn danh"}
+                          {(<span className="text-xs text-gray-600 ml-2">(KV: {req.areaName || "Chưa có khu vực"})</span>)}
+                        </Typography>
+                          <Typography variant="small" color="blue-gray" className="font-normal mt-1">
+                            {req.title}
+                          </Typography>
+                          <Typography variant="small" color="gray" className="font-normal text-xs mt-1">
+                            {(req.time)}
+                          </Typography>
+                        </div>
+                        
+                        <div className="flex gap-2 mt-2 md:mt-0">
+                          <Button size="sm" color="green" variant="gradient" className="flex items-center gap-1" onClick={() => handleRequestAction(req.wateringId, req.scheduleId, 'approve')}>
+                            <CheckIcon strokeWidth={3} className="h-3.5 w-3.5"/>
+                              Duyệt
+                          </Button>
+                          <Button size="sm" color="red" variant="gradient" className="flex items-center gap-1" onClick={() => handleRequestAction(req.wateringId, req.scheduleId, 'reject')}>
+                            <XMarkIcon strokeWidth={3} className="h-3.5 w-3.5"/> Từ chối
+                          </Button>
+                          </div>
+                      </div>
+                    </Card>))}
+                  </div>) : (<Typography color="blue-gray" className="text-center">Không có yêu cầu nào {selectedRegion && selectedRegion !== "all" ? `cho ${zoneData.find(z => z.id === selectedRegion)?.name || 'khu vực này'}` : ""}.</Typography>)}</CardBody></Card>
           </TabPanel>
 
           {/* === Tab Panel: Gửi Thông báo / Note (SỬ DỤNG filteredStaffListForNotifications) === */}
@@ -95,10 +234,11 @@ export function AdminNotificationCenter() {
                          onChange={(value) => setRecipient(value)}
                          animate={{mount: { y: 0 }, unmount: { y: 25 }}}
                         >
-                         {/* --- SỬ DỤNG DANH SÁCH ĐÃ LỌC --- */}
-                         {filteredStaffListForNotifications.map(staff => (
-                            <Option key={staff.value} value={staff.value}>{staff.label}</Option>
-                         ))}
+                          {/* --- SỬ DỤNG DANH SÁCH ĐÃ LỌC --- */}
+                          <Option key="all" value="all">Tất cả nhân viên</Option>
+                          {filteredStaffListForNotifications.map(staff => (
+                            <Option key={staff._id} value={staff._id}>{staff.Name}</Option>
+                          ))}
                       </Select>
                       
                       <Textarea label="Nội dung tin nhắn" rows={6} value={noteMessage} onChange={(e) => setNoteMessage(e.target.value)} required />

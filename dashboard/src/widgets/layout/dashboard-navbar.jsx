@@ -94,9 +94,7 @@ export function DashboardNavbar() {
           </Typography>
         </div>
         <div className="flex items-center">
-          <div className="mr-auto md:mr-4 md:w-56">
-            <Input label="Search" />
-          </div>
+  
           
           <IconButton variant="text" color="blue-gray" className="grid xl:hidden" onClick={() => setOpenSidenav(dispatch, !openSidenav)}>
             <Bars3Icon strokeWidth={3} className="h-6 w-6 text-blue-gray-500" />
@@ -140,42 +138,11 @@ export function DashboardNavbar() {
             </Link>
           )}
           
-           {isAuthenticated && userRole === 'admin' && ( 
-              <Menu>
-                <MenuHandler>
-                  <Button variant="text" color="blue-gray" className="ml-2 mr-0 md:mr-4 px-2 flex items-center gap-1">
-                    <MapPinIcon className="h-4 w-4"/>
-                    <Typography variant="small" className="font-medium">
-                      {selectedRegion === "all" ? "Tất cả Khu vực" : zoneData.find(z => z.id === selectedRegion)?.name || `Region ${selectedRegion}` }
-                    </Typography>
-                  </Button>
-                </MenuHandler>
-                <MenuList className="max-h-72 overflow-y-auto">
-                  <MenuItem 
-                    onClick={() => handleRegionSelect("all")} 
-                    className={`${selectedRegion === "all" ? "bg-blue-500 text-white" : "hover:bg-blue-gray-50"}`}
-                  >
-                    Tất cả Khu vực
-                  </MenuItem>
-                  {zoneData.map((zone) => (
-                    <MenuItem 
-                        key={zone.id} 
-                        onClick={() => handleRegionSelect(zone.id)}
-                        className={`${selectedRegion === zone.id ? "bg-blue-500 text-white" : "hover:bg-blue-gray-50"}`}
-                    >
-                      {zone.name}
-                    </MenuItem>
-                  ))}
-                </MenuList>
-              </Menu>
-           )}
+
           
           {isAuthenticated && (
             <>
-                <Menu>
-                    <MenuHandler><IconButton variant="text" color="blue-gray"><BellIcon className="h-5 w-5 text-blue-gray-500" /></IconButton></MenuHandler>
-                    <MenuList className="w-max border-0">{/* Notifications list */}</MenuList>
-                </Menu>
+       
                 <IconButton variant="text" color="blue-gray" onClick={() => setOpenConfigurator(dispatch, true)}><Cog6ToothIcon className="h-5 w-5 text-blue-gray-500" /></IconButton>
             </>
           )}

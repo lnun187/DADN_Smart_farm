@@ -47,7 +47,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
             color={sidenavType === "dark" ? "white" : "blue-gray"}
           >
              {/* Sẽ thay bằng tên user hoặc brandName tùy thiết kế */}
-            {brandName} 
+            {"HOME"} 
           </Typography>
         </Link>
         <IconButton

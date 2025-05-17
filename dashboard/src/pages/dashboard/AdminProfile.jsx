@@ -24,7 +24,7 @@ import { ProfileInfoCard } from "@/widgets/cards";
 
 export function AdminProfile() {
   const { user, userRole } = useAuth(); 
-
+  console.log("User context in AdminProfile:", user); // Kiểm tra giá trị user
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [editName, setEditName] = useState(user?.name || ""); 
   const [displayName, setDisplayName] = useState(user?.name || "Admin"); 
